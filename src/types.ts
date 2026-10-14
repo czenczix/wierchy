@@ -19,6 +19,13 @@ export type Ascent = {
   peakId: string // który szczyt (Peak.id)
   date: string // dzień wejścia w formacie RRRR-MM-DD
   note: string
+  photoId?: number // zdjęcie w tabeli photos (opcjonalne)
   gpsVerified: boolean // ustawi check-in GPS w kroku 7
   createdAt: number // kiedy wpis powstał (ms od 1970), do sortowania
+}
+
+/** Zdjęcie trzymamy osobno od wejścia, bo jest duże, a listy wejść ładujemy często. */
+export type Photo = {
+  id?: number
+  blob: Blob // sam obrazek (zmniejszony JPEG)
 }

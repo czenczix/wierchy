@@ -2,8 +2,10 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import AscentForm from '../components/AscentForm'
+import AscentPhoto from '../components/AscentPhoto'
 import { getPeak } from '../data/peaks'
 import { db } from '../db'
+import type { Ascent } from '../types'
 
 const RANGE_LABEL = { wysokie: 'Tatry Wysokie', zachodnie: 'Tatry Zachodnie' }
 
@@ -33,8 +35,10 @@ export default function PeakPage() {
     )
   }
 
-  async function remove(ascentId: number) {
-    if (confirm('Usunąć to wejście?')) await db.ascents.delete(ascentId)
+  async function remove(a: Ascent) {
+    if (!confirm('Usunąć to wejście?')) return
+    await db.ascents.delete(a.id!)
+    if (a.photoId) await db.photos.delete(a.photoId) // razem z wejściem usuwamy jego zdjęcie
   }
 
   return (
@@ -71,11 +75,12 @@ export default function PeakPage() {
           <ul className="list">
             {ascents.map((a) => (
               <li key={a.id} className="ascent">
-                <div>
+                <div className="ascent-head">
                   <strong>{formatDate(a.date)}</strong>
-                  {a.note && <p className="ascent-note">{a.note}</p>}
+                  <button className="link-button" onClick={() => remove(a)} aria-label="Usuń wejście">Usuń</button>
                 </div>
-                <button className="link-button" onClick={() => remove(a.id!)} aria-label="Usuń wejście">Usuń</button>
+                {a.note && <p className="ascent-note">{a.note}</p>}
+                {a.photoId && <AscentPhoto photoId={a.photoId} />}
               </li>
             ))}
           </ul>
