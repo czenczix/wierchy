@@ -102,3 +102,13 @@ h2 { font-size: 1.1rem; margin: 24px 0 0; }
 }
 .form-buttons { display: flex; gap: 8px; }
 .form-buttons > * { flex: 1; margin: 0; }
+
+/* Check-in GPS */
+.checkin { margin-top: 12px; }
+.checkin .secondary { width: 100%; }
+.msg { margin: 8px 0 0; font-size: 0.9rem; color: var(--muted); }
+.msg.ok { color: var(--accent); font-weight: 600; }
+.gps-badge {
+  margin-left: 8px; padding: 2px 8px; border-radius: 999px; font-size: 0.75rem; font-weight: 600;
+  background: var(--accent); color: var(--bg); vertical-align: middle;
+}

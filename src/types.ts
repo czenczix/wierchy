@@ -20,7 +20,9 @@ export type Ascent = {
   date: string // dzień wejścia w formacie RRRR-MM-DD
   note: string
   photoId?: number // zdjęcie w tabeli photos (opcjonalne)
-  gpsVerified: boolean // ustawi check-in GPS w kroku 7
+  gpsVerified: boolean // true, jeśli zrobiono check-in GPS na szczycie
+  gpsDistance?: number // odległość od wierzchołka przy check-inie (m)
+  gpsAccuracy?: number // dokładność pomiaru GPS (m)
   createdAt: number // kiedy wpis powstał (ms od 1970), do sortowania
 }
 

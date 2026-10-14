@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import AscentForm from '../components/AscentForm'
 import AscentPhoto from '../components/AscentPhoto'
+import GpsCheckIn from '../components/GpsCheckIn'
 import { getPeak } from '../data/peaks'
 import { db } from '../db'
 import type { Ascent } from '../types'
@@ -69,6 +70,8 @@ export default function PeakPage() {
         </button>
       )}
 
+      <GpsCheckIn peak={peak} />
+
       {ascents && ascents.length > 0 && (
         <>
           <h2>Twoje wejścia ({ascents.length})</h2>
@@ -76,7 +79,10 @@ export default function PeakPage() {
             {ascents.map((a) => (
               <li key={a.id} className="ascent">
                 <div className="ascent-head">
-                  <strong>{formatDate(a.date)}</strong>
+                  <strong>
+                    {formatDate(a.date)}
+                    {a.gpsVerified && <span className="gps-badge" title={`Check-in GPS, ${a.gpsDistance} m od wierzchołka`}>📍 GPS</span>}
+                  </strong>
                   <button className="link-button" onClick={() => remove(a)} aria-label="Usuń wejście">Usuń</button>
                 </div>
                 {a.note && <p className="ascent-note">{a.note}</p>}
