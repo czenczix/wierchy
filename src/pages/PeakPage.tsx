@@ -34,6 +34,8 @@ export default function PeakPage() {
         </dd>
       </dl>
 
+      <Link to={`/mapa?szczyt=${peak.id}`} className="secondary">Pokaż na mapie</Link>
+
       <button className="primary" disabled>Oznacz zdobycie</button>
       <p className="muted small">Zapisywanie zdobyć dojdzie w kroku 5.</p>
     </section>
