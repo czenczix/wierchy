@@ -42,14 +42,35 @@ const PEAKS = [
 const BBOX = '49.15,19.70,49.31,20.20'
 const query = `[out:json][timeout:60];node["natural"="peak"](${BBOX});out body;`
 
-const res = await fetch('https://overpass-api.de/api/interpreter', {
-  method: 'POST',
-  // Overpass odrzuca zapytania bez przedstawienia się (HTTP 406), więc podajemy nazwę apki.
-  headers: { 'User-Agent': 'wierchy/0.1 (https://github.com/czenczix/wierchy)', Accept: 'application/json' },
-  body: new URLSearchParams({ data: query }),
-})
-if (!res.ok) throw new Error(`Overpass: HTTP ${res.status}`)
-const nodes = (await res.json()).elements
+// Publiczne serwery Overpass bywają przeciążone, więc próbujemy kilku po kolei.
+const SERVERS = [
+  'https://overpass-api.de/api/interpreter',
+  'https://overpass.private.coffee/api/interpreter',
+  'https://overpass.kumi.systems/api/interpreter',
+]
+
+async function runQuery() {
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    for (const url of SERVERS) {
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          // Overpass odrzuca zapytania bez przedstawienia się (HTTP 406), więc podajemy nazwę apki.
+          headers: { 'User-Agent': 'wierchy/0.1 (https://github.com/czenczix/wierchy)', Accept: 'application/json' },
+          body: new URLSearchParams({ data: query }),
+        })
+        if (res.ok) return (await res.json()).elements
+        console.log(`${url}: HTTP ${res.status}`)
+      } catch (err) {
+        console.log(`${url}: ${err.message}`)
+      }
+    }
+    await new Promise((r) => setTimeout(r, 10_000))
+  }
+  throw new Error('Żaden serwer Overpass nie odpowiedział')
+}
+
+const nodes = await runQuery()
 
 const namesOf = (n) =>
   [n.tags.name, n.tags['name:pl'], n.tags.alt_name, n.tags.official_name].filter(Boolean)
