@@ -44,6 +44,8 @@ const query = `[out:json][timeout:60];node["natural"="peak"](${BBOX});out body;`
 
 const res = await fetch('https://overpass-api.de/api/interpreter', {
   method: 'POST',
+  // Overpass odrzuca zapytania bez przedstawienia się (HTTP 406), więc podajemy nazwę apki.
+  headers: { 'User-Agent': 'wierchy/0.1 (https://github.com/czenczix/wierchy)', Accept: 'application/json' },
   body: new URLSearchParams({ data: query }),
 })
 if (!res.ok) throw new Error(`Overpass: HTTP ${res.status}`)
