@@ -6,7 +6,7 @@
 // Wysokości bierzemy z naszej zatwierdzonej listy (polskie źródła),
 // a z OSM tylko położenie wierzchołka. OSM bywa niespójny co do wysokości.
 
-import { writeFileSync } from 'node:fs'
+import { mkdirSync, writeFileSync } from 'node:fs'
 
 // Nasza lista: id (do adresu URL), nazwa, możliwe nazwy w OSM, wysokość, część Tatr.
 const PEAKS = [
@@ -40,7 +40,7 @@ const PEAKS = [
 
 // Prostokąt obejmujący polskie Tatry (z zapasem na szczyty graniczne).
 const BBOX = '49.15,19.70,49.31,20.20'
-const query = `[out:json][timeout:60];node["natural"="peak"](${BBOX});out body;`
+const query = `[out:json][timeout:25];node["natural"="peak"](${BBOX});out body;`
 
 // Publiczne serwery Overpass bywają przeciążone, więc próbujemy kilku po kolei.
 const SERVERS = [
@@ -102,6 +102,7 @@ for (const [id, name, aliases, elevation, range] of PEAKS) {
   })
 }
 
+mkdirSync('src/data', { recursive: true })
 writeFileSync('src/data/peaks.json', JSON.stringify(peaks, null, 2) + '\n')
 console.log(`Zapisano ${peaks.length} z ${PEAKS.length} szczytów.`)
 if (problems.length) console.log('Do sprawdzenia:\n- ' + problems.join('\n- '))
