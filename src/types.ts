@@ -12,3 +12,13 @@ export type Peak = {
   range: 'zachodnie' | 'wysokie' // część Tatr
   osmId: number // id punktu w OpenStreetMap, skąd wzięliśmy współrzędne (0 = współrzędne przybliżone)
 }
+
+/** Jedno wejście na szczyt. Na ten sam szczyt można wejść wiele razy. */
+export type Ascent = {
+  id?: number // nadaje baza przy zapisie, dlatego przed zapisem go nie ma
+  peakId: string // który szczyt (Peak.id)
+  date: string // dzień wejścia w formacie RRRR-MM-DD
+  note: string
+  gpsVerified: boolean // ustawi check-in GPS w kroku 7
+  createdAt: number // kiedy wpis powstał (ms od 1970), do sortowania
+}

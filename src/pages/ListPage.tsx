@@ -1,6 +1,8 @@
+import { useLiveQuery } from 'dexie-react-hooks'
 import { useState } from 'react'
 import PeakRow from '../components/PeakRow'
 import { peaks } from '../data/peaks'
+import { db } from '../db'
 import type { Peak } from '../types'
 
 type Filter = 'wszystkie' | Peak['range']
@@ -16,6 +18,10 @@ export default function ListPage() {
   // przerysuje ekran z nową wartością i lista sama się przefiltruje.
   const [filter, setFilter] = useState<Filter>('wszystkie')
 
+  // Zbiór id zdobytych szczytów. uniqueKeys zwraca każde peakId tylko raz,
+  // nawet jeśli na Rysy wszedłeś trzy razy.
+  const doneIds = useLiveQuery(async () => new Set((await db.ascents.orderBy('peakId').uniqueKeys()) as string[]))
+
   const visible = peaks
     .filter((p) => filter === 'wszystkie' || p.range === filter)
     .sort((a, b) => b.elevation - a.elevation)
@@ -23,7 +29,9 @@ export default function ListPage() {
   return (
     <section>
       <h1>Szczyty</h1>
-      <p className="muted">{peaks.length} szczytów w kolekcji</p>
+      <p className="muted">
+        Zdobyte: {doneIds?.size ?? 0} z {peaks.length}
+      </p>
 
       <div className="chips" role="group" aria-label="Część Tatr">
         {FILTERS.map((f) => (
@@ -39,7 +47,7 @@ export default function ListPage() {
 
       <ul className="list">
         {visible.map((peak) => (
-          <PeakRow key={peak.id} peak={peak} />
+          <PeakRow key={peak.id} peak={peak} done={doneIds?.has(peak.id) ?? false} />
         ))}
       </ul>
     </section>
