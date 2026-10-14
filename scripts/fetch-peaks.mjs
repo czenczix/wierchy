@@ -14,7 +14,7 @@ const PEAKS = [
   ['swinica', 'Świnica', ['Svinica'], 2301, 'wysokie'],
   ['kozi-wierch', 'Kozi Wierch', [], 2291, 'wysokie'],
   ['zadni-granat', 'Zadni Granat', [], 2240, 'wysokie'],
-  ['starorobocianski-wierch', 'Starorobociański Wierch', ['Klin', 'Klin Starorobociański'], 2176, 'zachodnie'],
+  ['starorobocianski-wierch', 'Starorobociański Wierch', ['Klin Starorobociański'], 2176, 'zachodnie'],
   ['szpiglasowy-wierch', 'Szpiglasowy Wierch', [], 2172, 'wysokie'],
   ['koscielec', 'Kościelec', [], 2155, 'wysokie'],
   ['jarzabczy-wierch', 'Jarząbczy Wierch', ['Jarabý vrch'], 2137, 'zachodnie'],
@@ -24,14 +24,14 @@ const PEAKS = [
   ['wolowiec', 'Wołowiec', ['Volovec'], 2064, 'zachodnie'],
   ['beskid', 'Beskid', [], 2012, 'zachodnie'],
   ['kopa-kondracka', 'Kopa Kondracka', [], 2005, 'zachodnie'],
-  ['konczysty-wierch', 'Kończysty Wierch', ['Končistá'], 2002, 'zachodnie'],
+  ['konczysty-wierch', 'Kończysty Wierch', [], 2002, 'zachodnie'],
   ['kasprowy-wierch', 'Kasprowy Wierch', [], 1987, 'zachodnie'],
   ['giewont', 'Giewont', ['Wielki Giewont'], 1894, 'zachodnie'],
   ['rakon', 'Rakoń', [], 1879, 'zachodnie'],
   ['ornak', 'Ornak', [], 1854, 'zachodnie'],
   ['kominiarski-wierch', 'Kominiarski Wierch', [], 1829, 'zachodnie'],
   ['trzydniowianski-wierch', 'Trzydniowiański Wierch', [], 1758, 'zachodnie'],
-  ['grzes', 'Grześ', ['Lúčna'], 1653, 'zachodnie'],
+  ['grzes', 'Grześ', [], 1653, 'zachodnie'],
   ['gesia-szyja', 'Gęsia Szyja', [], 1489, 'wysokie'],
   ['sarnia-skala', 'Sarnia Skała', [], 1377, 'zachodnie'],
   ['wielki-kopieniec', 'Wielki Kopieniec', ['Kopieniec Wielki'], 1328, 'wysokie'],
@@ -86,7 +86,10 @@ for (const [id, name, aliases, elevation, range] of PEAKS) {
   }
   // Kilka trafień (np. Rysy mają wierzchołek polski i słowacki):
   // wybieramy ten, którego wysokość w OSM jest najbliższa naszej.
-  const diff = (n) => Math.abs(parseFloat(n.tags.ele ?? 'NaN') - elevation) || 9999
+  const diff = (n) => {
+    const d = Math.abs(parseFloat(n.tags.ele) - elevation)
+    return Number.isNaN(d) ? 9999 : d // brak wysokości w OSM = najgorszy kandydat
+  }
   candidates.sort((a, b) => diff(a) - diff(b))
   const best = candidates[0]
   if (diff(best) > 15) problems.push(`${name}: OSM ma ${best.tags.ele ?? '?'} m, my ${elevation} m`)

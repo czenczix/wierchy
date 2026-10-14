@@ -4,40 +4,40 @@
     "name": "Rysy",
     "type": "peak",
     "elevation": 2499,
-    "lat": 49.1794,
-    "lon": 20.0881,
+    "lat": 49.17932,
+    "lon": 20.08846,
     "range": "wysokie",
-    "osmId": 0
+    "osmId": 1862536196
   },
   {
     "id": "swinica",
     "name": "Świnica",
     "type": "peak",
     "elevation": 2301,
-    "lat": 49.2194,
-    "lon": 20.0094,
+    "lat": 49.21942,
+    "lon": 20.00931,
     "range": "wysokie",
-    "osmId": 0
+    "osmId": 3343362920
   },
   {
     "id": "kozi-wierch",
     "name": "Kozi Wierch",
     "type": "peak",
     "elevation": 2291,
-    "lat": 49.2181,
-    "lon": 20.0286,
+    "lat": 49.21832,
+    "lon": 20.02871,
     "range": "wysokie",
-    "osmId": 0
+    "osmId": 460928401
   },
   {
     "id": "zadni-granat",
     "name": "Zadni Granat",
     "type": "peak",
     "elevation": 2240,
-    "lat": 49.2172,
-    "lon": 20.0397,
+    "lat": 49.22477,
+    "lon": 20.03257,
     "range": "wysokie",
-    "osmId": 0
+    "osmId": 1496151183
   },
   {
     "id": "starorobocianski-wierch",
@@ -54,90 +54,90 @@
     "name": "Szpiglasowy Wierch",
     "type": "peak",
     "elevation": 2172,
-    "lat": 49.1975,
-    "lon": 20.0383,
+    "lat": 49.19729,
+    "lon": 20.04011,
     "range": "wysokie",
-    "osmId": 0
+    "osmId": 452477062
   },
   {
     "id": "koscielec",
     "name": "Kościelec",
     "type": "peak",
     "elevation": 2155,
-    "lat": 49.2253,
-    "lon": 20.0144,
+    "lat": 49.22518,
+    "lon": 20.01458,
     "range": "wysokie",
-    "osmId": 0
+    "osmId": 355985949
   },
   {
     "id": "jarzabczy-wierch",
     "name": "Jarząbczy Wierch",
     "type": "peak",
     "elevation": 2137,
-    "lat": 49.2,
-    "lon": 19.825,
+    "lat": 49.19747,
+    "lon": 19.7951,
     "range": "zachodnie",
-    "osmId": 0
+    "osmId": 3560920780
   },
   {
     "id": "krzesanica",
     "name": "Krzesanica",
     "type": "peak",
     "elevation": 2122,
-    "lat": 49.2311,
-    "lon": 19.9136,
+    "lat": 49.23166,
+    "lon": 19.90949,
     "range": "zachodnie",
-    "osmId": 0
+    "osmId": 1295341402
   },
   {
     "id": "ciemniak",
     "name": "Ciemniak",
     "type": "peak",
     "elevation": 2096,
-    "lat": 49.2306,
-    "lon": 19.9006,
+    "lat": 49.23101,
+    "lon": 19.90341,
     "range": "zachodnie",
-    "osmId": 0
+    "osmId": 496805357
   },
   {
     "id": "malolaczniak",
     "name": "Małołączniak",
     "type": "peak",
     "elevation": 2096,
-    "lat": 49.235,
-    "lon": 19.9244,
+    "lat": 49.23583,
+    "lon": 19.91922,
     "range": "zachodnie",
-    "osmId": 0
+    "osmId": 496805360
   },
   {
     "id": "wolowiec",
     "name": "Wołowiec",
     "type": "peak",
     "elevation": 2064,
-    "lat": 49.2075,
-    "lon": 19.7633,
+    "lat": 49.20757,
+    "lon": 19.76313,
     "range": "zachodnie",
-    "osmId": 0
+    "osmId": 2302916813
   },
   {
     "id": "beskid",
     "name": "Beskid",
     "type": "peak",
     "elevation": 2012,
-    "lat": 49.2275,
-    "lon": 19.9908,
+    "lat": 49.22824,
+    "lon": 19.98792,
     "range": "zachodnie",
-    "osmId": 0
+    "osmId": 430646675
   },
   {
     "id": "kopa-kondracka",
     "name": "Kopa Kondracka",
     "type": "peak",
     "elevation": 2005,
-    "lat": 49.2361,
-    "lon": 19.9364,
+    "lat": 49.23654,
+    "lon": 19.93227,
     "range": "zachodnie",
-    "osmId": 0
+    "osmId": 3560695684
   },
   {
     "id": "konczysty-wierch",
@@ -155,59 +155,59 @@
     "type": "peak",
     "elevation": 1987,
     "lat": 49.2318,
-    "lon": 19.9817,
+    "lon": 19.98156,
     "range": "zachodnie",
-    "osmId": 0
+    "osmId": 3552158247
   },
   {
     "id": "giewont",
     "name": "Giewont",
     "type": "peak",
     "elevation": 1894,
-    "lat": 49.2508,
-    "lon": 19.9339,
+    "lat": 49.25095,
+    "lon": 19.9341,
     "range": "zachodnie",
-    "osmId": 0
+    "osmId": 1295278143
   },
   {
     "id": "rakon",
     "name": "Rakoń",
     "type": "peak",
     "elevation": 1879,
-    "lat": 49.2133,
-    "lon": 19.755,
+    "lat": 49.21596,
+    "lon": 19.75846,
     "range": "zachodnie",
-    "osmId": 0
+    "osmId": 946080669
   },
   {
     "id": "ornak",
     "name": "Ornak",
     "type": "peak",
     "elevation": 1854,
-    "lat": 49.2133,
-    "lon": 19.8333,
+    "lat": 49.21905,
+    "lon": 19.83295,
     "range": "zachodnie",
-    "osmId": 0
+    "osmId": 1294577934
   },
   {
     "id": "kominiarski-wierch",
     "name": "Kominiarski Wierch",
     "type": "peak",
     "elevation": 1829,
-    "lat": 49.2397,
-    "lon": 19.8467,
+    "lat": 49.24081,
+    "lon": 19.83554,
     "range": "zachodnie",
-    "osmId": 0
+    "osmId": 1295379325
   },
   {
     "id": "trzydniowianski-wierch",
     "name": "Trzydniowiański Wierch",
     "type": "peak",
     "elevation": 1758,
-    "lat": 49.222,
-    "lon": 19.809,
+    "lat": 49.2191,
+    "lon": 19.80373,
     "range": "zachodnie",
-    "osmId": 0
+    "osmId": 1294543814
   },
   {
     "id": "grzes",
@@ -224,20 +224,20 @@
     "name": "Gęsia Szyja",
     "type": "peak",
     "elevation": 1489,
-    "lat": 49.2611,
-    "lon": 20.0806,
+    "lat": 49.25903,
+    "lon": 20.07652,
     "range": "wysokie",
-    "osmId": 0
+    "osmId": 803761539
   },
   {
     "id": "sarnia-skala",
     "name": "Sarnia Skała",
     "type": "peak",
     "elevation": 1377,
-    "lat": 49.2667,
-    "lon": 19.9472,
+    "lat": 49.2649,
+    "lon": 19.941,
     "range": "zachodnie",
-    "osmId": 0
+    "osmId": 469733583
   },
   {
     "id": "wielki-kopieniec",
@@ -254,9 +254,9 @@
     "name": "Nosal",
     "type": "peak",
     "elevation": 1206,
-    "lat": 49.2808,
-    "lon": 19.9925,
+    "lat": 49.27643,
+    "lon": 19.98946,
     "range": "wysokie",
-    "osmId": 0
+    "osmId": 1103336843
   }
 ]
