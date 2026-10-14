@@ -16,3 +16,8 @@ npm run build    # wersja produkcyjna do folderu dist/
 - `src/App.tsx` – układ apki i lista ekranów (tras)
 - `src/pages/` – ekrany: lista, mapa, karta szczytu, postęp
 - `src/components/` – mniejsze kawałki UI używane na ekranach
+
+## Publikacja
+
+Każdy push do `main` uruchamia `.github/workflows/deploy.yml`, który buduje apkę i publikuje ją na
+https://czenczix.github.io/wierchy/
