@@ -140,3 +140,6 @@ h2 { font-size: 1.1rem; margin: 24px 0 0; }
   position: sticky; top: 0; z-index: 1001; padding: 8px 16px; font-size: 0.85rem; text-align: center;
   background: #8a5a12; color: #fff;
 }
+
+.backup { margin-top: 8px; }
+.backup .form-buttons { margin-top: 12px; }

@@ -1,8 +1,10 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { computeBadges } from '../badges'
+import BackupSection from '../components/BackupSection'
 import ProgressBar from '../components/ProgressBar'
 import { peaks } from '../data/peaks'
 import { db } from '../db'
+import { ascentsLabel } from '../plural'
 
 const formatDate = (iso: string) =>
   new Date(iso + 'T12:00').toLocaleDateString('pl-PL', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -24,7 +26,7 @@ export default function ProgressPage() {
 
       <div className="progress-hero">
         <div className="progress-big">{pct}%</div>
-        <div className="muted">{doneIds.size} z {peaks.length} szczytów · {ascents.length} wejść</div>
+        <div className="muted">{doneIds.size} z {peaks.length} szczytów · {ascentsLabel(ascents.length)}</div>
         <ProgressBar done={doneIds.size} total={peaks.length} />
       </div>
 
@@ -46,6 +48,8 @@ export default function ProgressPage() {
           </li>
         ))}
       </ul>
+
+      <BackupSection />
     </section>
   )
 }
