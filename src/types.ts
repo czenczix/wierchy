@@ -30,6 +30,8 @@ export type Collection = {
   icon: string
   description: string
   pointIds: string[]
+  crown?: boolean // korony pokazujemy w zakładce Korona
+  source?: string // kto prowadzi odznakę, np. 'PTT'
 }
 
 /** Jedno wejście na szczyt. Na ten sam szczyt można wejść wiele razy. */

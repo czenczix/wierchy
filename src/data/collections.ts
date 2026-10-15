@@ -12,6 +12,8 @@ export const collections: Collection[] = [
     name: 'Korona Gór Polskich',
     icon: '👑',
     description: 'Najwyższe szczyty 28 pasm górskich Polski',
+    crown: true,
+    source: 'Klub Zdobywców KGP',
     // Rysy są i tu, i w Szczytach Tatr: jedno wejście liczy się do obu kolekcji.
     pointIds: [
       'rysy', 'babia-gora', 'sniezka', 'snieznik', 'tarnica', 'turbacz', 'radziejowa', 'skrzyczne',
@@ -19,6 +21,16 @@ export const collections: Collection[] = [
       'jagodna', 'skalnik', 'waligora', 'czupel', 'szczeliniec-wielki', 'lubomir', 'biskupia-kopa',
       'chelmiec', 'klodzka-gora', 'skopiec', 'sleza', 'lysica',
     ],
+  },
+  {
+    id: 'kbp',
+    name: 'Korona Beskidów Polskich',
+    icon: '🌲',
+    description: 'Najwyższe szczyty 9 pasm Beskidów i Gorców',
+    crown: true,
+    source: 'PTT (część Wielkiej Korony Beskidów)',
+    // Wszystkie 9 są też w Koronie Gór Polskich, więc wejścia liczą się podwójnie.
+    pointIds: ['babia-gora', 'tarnica', 'turbacz', 'radziejowa', 'skrzyczne', 'mogielica', 'lackowa', 'czupel', 'lubomir'],
   },
   {
     id: 'tatry-szczyty',
@@ -38,6 +50,9 @@ export const collections: Collection[] = [
 
 /** Kolekcje, do których należy dany punkt (np. Rysy: Korona i Szczyty Tatr). */
 export const collectionsOf = (pointId: string) => collections.filter((c) => c.pointIds.includes(pointId))
+
+/** Korony do zakładki Korona, w kolejności z listy wyżej. */
+export const crowns = collections.filter((c) => c.crown)
 
 export function getCollection(id: string): Collection {
   const c = collections.find((c) => c.id === id)

@@ -27,6 +27,7 @@ const ALL_PEAKS = ids((p) => p.type === 'peak')
 const TATRA_PEAKS = getCollection('tatry-szczyty').pointIds
 const PASSES = getCollection('tatry-przelecze').pointIds
 const KGP = getCollection('kgp').pointIds
+const KBP = getCollection('kbp').pointIds
 const kgpIn = (group: string) => KGP.filter((id) => groupOf(points.find((p) => p.id === id)!.range) === group)
 const KGP_SUDETY = kgpIn('Sudety')
 const KGP_KARPATY = kgpIn('Karpaty').concat(kgpIn('Tatry')) // Tatry też są częścią Karpat
@@ -52,6 +53,7 @@ export const BADGES: BadgeDef[] = [
   { id: 'kgp-21', icon: '🥇', name: 'Trzy czwarte Korony', description: '21 szczytów Korony Gór Polskich', measure: atLeast(KGP, 21) },
   { id: 'kgp', icon: '👑', name: 'Korona Gór Polskich', description: 'Wszystkie 28 szczytów Korony', measure: atLeast(KGP) },
   { id: 'kgp-sudety', icon: '🏰', name: 'Sudecka Korona', description: 'Wszystkie szczyty Korony w Sudetach', measure: atLeast(KGP_SUDETY) },
+  { id: 'kbp', icon: '🌲', name: 'Korona Beskidów Polskich', description: 'Wszystkie 9 szczytów Korony Beskidów', measure: atLeast(KBP) },
   { id: 'kgp-karpaty', icon: '🌲', name: 'Karpacka Korona', description: 'Wszystkie szczyty Korony w Karpatach', measure: atLeast(KGP_KARPATY) },
   { id: 'pass-all', icon: '🎖️', name: 'Przełęcze Tatr', description: 'Wszystkie przełęcze z listy', measure: atLeast(PASSES) },
 ]
