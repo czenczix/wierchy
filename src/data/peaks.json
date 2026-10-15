@@ -6,7 +6,7 @@
     "elevation": 2499,
     "lat": 49.17932,
     "lon": 20.08846,
-    "range": "wysokie",
+    "range": "tatry-wysokie",
     "osmId": 1862536196
   },
   {
@@ -16,7 +16,7 @@
     "elevation": 2301,
     "lat": 49.21942,
     "lon": 20.00931,
-    "range": "wysokie",
+    "range": "tatry-wysokie",
     "osmId": 3343362920
   },
   {
@@ -26,7 +26,7 @@
     "elevation": 2291,
     "lat": 49.21832,
     "lon": 20.02871,
-    "range": "wysokie",
+    "range": "tatry-wysokie",
     "osmId": 460928401
   },
   {
@@ -36,7 +36,7 @@
     "elevation": 2240,
     "lat": 49.22477,
     "lon": 20.03257,
-    "range": "wysokie",
+    "range": "tatry-wysokie",
     "osmId": 1496151183
   },
   {
@@ -46,7 +46,7 @@
     "elevation": 2176,
     "lat": 49.1953,
     "lon": 19.805,
-    "range": "zachodnie",
+    "range": "tatry-zachodnie",
     "osmId": 0
   },
   {
@@ -56,7 +56,7 @@
     "elevation": 2172,
     "lat": 49.19729,
     "lon": 20.04011,
-    "range": "wysokie",
+    "range": "tatry-wysokie",
     "osmId": 452477062
   },
   {
@@ -66,7 +66,7 @@
     "elevation": 2155,
     "lat": 49.22518,
     "lon": 20.01458,
-    "range": "wysokie",
+    "range": "tatry-wysokie",
     "osmId": 355985949
   },
   {
@@ -76,7 +76,7 @@
     "elevation": 2137,
     "lat": 49.19747,
     "lon": 19.7951,
-    "range": "zachodnie",
+    "range": "tatry-zachodnie",
     "osmId": 3560920780
   },
   {
@@ -86,7 +86,7 @@
     "elevation": 2122,
     "lat": 49.23166,
     "lon": 19.90949,
-    "range": "zachodnie",
+    "range": "tatry-zachodnie",
     "osmId": 1295341402
   },
   {
@@ -96,7 +96,7 @@
     "elevation": 2096,
     "lat": 49.23101,
     "lon": 19.90341,
-    "range": "zachodnie",
+    "range": "tatry-zachodnie",
     "osmId": 496805357
   },
   {
@@ -106,7 +106,7 @@
     "elevation": 2096,
     "lat": 49.23583,
     "lon": 19.91922,
-    "range": "zachodnie",
+    "range": "tatry-zachodnie",
     "osmId": 496805360
   },
   {
@@ -116,7 +116,7 @@
     "elevation": 2064,
     "lat": 49.20757,
     "lon": 19.76313,
-    "range": "zachodnie",
+    "range": "tatry-zachodnie",
     "osmId": 2302916813
   },
   {
@@ -126,7 +126,7 @@
     "elevation": 2012,
     "lat": 49.22824,
     "lon": 19.98792,
-    "range": "zachodnie",
+    "range": "tatry-zachodnie",
     "osmId": 430646675
   },
   {
@@ -136,7 +136,7 @@
     "elevation": 2005,
     "lat": 49.23654,
     "lon": 19.93227,
-    "range": "zachodnie",
+    "range": "tatry-zachodnie",
     "osmId": 3560695684
   },
   {
@@ -146,7 +146,7 @@
     "elevation": 2002,
     "lat": 49.1972,
     "lon": 19.8167,
-    "range": "zachodnie",
+    "range": "tatry-zachodnie",
     "osmId": 0
   },
   {
@@ -156,7 +156,7 @@
     "elevation": 1987,
     "lat": 49.2318,
     "lon": 19.98156,
-    "range": "zachodnie",
+    "range": "tatry-zachodnie",
     "osmId": 3552158247
   },
   {
@@ -166,7 +166,7 @@
     "elevation": 1894,
     "lat": 49.25095,
     "lon": 19.9341,
-    "range": "zachodnie",
+    "range": "tatry-zachodnie",
     "osmId": 1295278143
   },
   {
@@ -176,7 +176,7 @@
     "elevation": 1879,
     "lat": 49.21596,
     "lon": 19.75846,
-    "range": "zachodnie",
+    "range": "tatry-zachodnie",
     "osmId": 946080669
   },
   {
@@ -186,7 +186,7 @@
     "elevation": 1854,
     "lat": 49.21905,
     "lon": 19.83295,
-    "range": "zachodnie",
+    "range": "tatry-zachodnie",
     "osmId": 1294577934
   },
   {
@@ -196,7 +196,7 @@
     "elevation": 1829,
     "lat": 49.24081,
     "lon": 19.83554,
-    "range": "zachodnie",
+    "range": "tatry-zachodnie",
     "osmId": 1295379325
   },
   {
@@ -206,7 +206,7 @@
     "elevation": 1758,
     "lat": 49.2191,
     "lon": 19.80373,
-    "range": "zachodnie",
+    "range": "tatry-zachodnie",
     "osmId": 1294543814
   },
   {
@@ -216,7 +216,7 @@
     "elevation": 1653,
     "lat": 49.2283,
     "lon": 19.7417,
-    "range": "zachodnie",
+    "range": "tatry-zachodnie",
     "osmId": 0
   },
   {
@@ -226,7 +226,7 @@
     "elevation": 1489,
     "lat": 49.25903,
     "lon": 20.07652,
-    "range": "wysokie",
+    "range": "tatry-wysokie",
     "osmId": 803761539
   },
   {
@@ -236,7 +236,7 @@
     "elevation": 1377,
     "lat": 49.2649,
     "lon": 19.941,
-    "range": "zachodnie",
+    "range": "tatry-zachodnie",
     "osmId": 469733583
   },
   {
@@ -246,7 +246,7 @@
     "elevation": 1328,
     "lat": 49.2783,
     "lon": 20.0069,
-    "range": "wysokie",
+    "range": "tatry-wysokie",
     "osmId": 0
   },
   {
@@ -256,7 +256,7 @@
     "elevation": 1206,
     "lat": 49.27643,
     "lon": 19.98946,
-    "range": "wysokie",
+    "range": "tatry-wysokie",
     "osmId": 1103336843
   }
 ]

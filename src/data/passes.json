@@ -1,0 +1,142 @@
+[
+  {
+    "id": "zawrat",
+    "name": "Zawrat",
+    "type": "pass",
+    "elevation": 2159,
+    "lat": 49.2189,
+    "lon": 20.0164,
+    "range": "tatry-wysokie",
+    "osmId": 0
+  },
+  {
+    "id": "kozia-przelecz",
+    "name": "Kozia Przełęcz",
+    "type": "pass",
+    "elevation": 2137,
+    "lat": 49.2186,
+    "lon": 20.0237,
+    "range": "tatry-wysokie",
+    "osmId": 0
+  },
+  {
+    "id": "krzyzne",
+    "name": "Krzyżne",
+    "type": "pass",
+    "elevation": 2112,
+    "lat": 49.2236,
+    "lon": 20.0497,
+    "range": "tatry-wysokie",
+    "osmId": 0
+  },
+  {
+    "id": "szpiglasowa-przelecz",
+    "name": "Szpiglasowa Przełęcz",
+    "type": "pass",
+    "elevation": 2110,
+    "lat": 49.1972,
+    "lon": 20.0437,
+    "range": "tatry-wysokie",
+    "osmId": 0
+  },
+  {
+    "id": "swinicka-przelecz",
+    "name": "Świnicka Przełęcz",
+    "type": "pass",
+    "elevation": 2051,
+    "lat": 49.2213,
+    "lon": 20.0029,
+    "range": "tatry-wysokie",
+    "osmId": 0
+  },
+  {
+    "id": "wrota-chalubinskiego",
+    "name": "Wrota Chałubińskiego",
+    "type": "pass",
+    "elevation": 2022,
+    "lat": 49.1884,
+    "lon": 20.0406,
+    "range": "tatry-wysokie",
+    "osmId": 0
+  },
+  {
+    "id": "liliowe",
+    "name": "Liliowe",
+    "type": "pass",
+    "elevation": 1952,
+    "lat": 49.2265,
+    "lon": 19.9923,
+    "range": "tatry-zachodnie",
+    "osmId": 0
+  },
+  {
+    "id": "przelecz-pod-kopa-kondracka",
+    "name": "Przełęcz pod Kopą Kondracką",
+    "type": "pass",
+    "elevation": 1863,
+    "lat": 49.2367,
+    "lon": 19.9451,
+    "range": "tatry-zachodnie",
+    "osmId": 0
+  },
+  {
+    "id": "karb",
+    "name": "Karb",
+    "type": "pass",
+    "elevation": 1853,
+    "lat": 49.2281,
+    "lon": 20.0154,
+    "range": "tatry-wysokie",
+    "osmId": 0
+  },
+  {
+    "id": "siwa-przelecz",
+    "name": "Siwa Przełęcz",
+    "type": "pass",
+    "elevation": 1812,
+    "lat": 49.2132,
+    "lon": 19.8361,
+    "range": "tatry-zachodnie",
+    "osmId": 0
+  },
+  {
+    "id": "przelecz-kondracka",
+    "name": "Przełęcz Kondracka",
+    "type": "pass",
+    "elevation": 1725,
+    "lat": 49.2405,
+    "lon": 19.944,
+    "range": "tatry-zachodnie",
+    "osmId": 0
+  },
+  {
+    "id": "przelecz-miedzy-kopami",
+    "name": "Przełęcz między Kopami",
+    "type": "pass",
+    "elevation": 1499,
+    "lat": 49.2561,
+    "lon": 20.0049,
+    "range": "tatry-wysokie",
+    "osmId": 0
+  },
+  {
+    "id": "przelecz-iwaniacka",
+    "name": "Przełęcz Iwaniacka",
+    "type": "pass",
+    "elevation": 1459,
+    "lat": 49.2295,
+    "lon": 19.8641,
+    "range": "tatry-zachodnie",
+    "osmId": 0
+  },
+  {
+    "id": "przelecz-w-grzybowcu",
+    "name": "Przełęcz w Grzybowcu",
+    "type": "pass",
+    "elevation": 1311,
+    "lat": 49.2601,
+    "lon": 19.9478,
+    "range": "tatry-zachodnie",
+    "osmId": 0
+  }
+]

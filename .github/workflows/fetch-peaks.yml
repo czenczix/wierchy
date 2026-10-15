@@ -1,9 +1,15 @@
-# Uruchamiany ręcznie (zakładka Actions → "Pobierz szczyty z OSM" → Run workflow).
-# Odpala scripts/fetch-peaks.mjs i wypisuje wynik w logu oraz jako plik do pobrania.
-name: Pobierz szczyty z OSM
+# Uruchamiany ręcznie (zakładka Actions → "Pobierz punkty z OSM" → Run workflow).
+# Odpala wybrany skrypt z folderu scripts/ i wypisuje wynik w logu oraz jako plik do pobrania.
+name: Pobierz punkty z OSM
 
 on:
   workflow_dispatch:
+    inputs:
+      what:
+        description: Co pobrać
+        type: choice
+        options: [peaks, passes]
+        default: peaks
 
 permissions:
   contents: read
@@ -16,8 +22,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: node scripts/fetch-peaks.mjs
+      - run: node scripts/fetch-${{ inputs.what }}.mjs
       - uses: actions/upload-artifact@v4
         with:
-          name: peaks
-          path: src/data/peaks.json
+          name: ${{ inputs.what }}
+          path: src/data/${{ inputs.what }}.json
