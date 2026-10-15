@@ -1,5 +1,6 @@
-import { peaks } from './data/peaks'
-import type { Ascent } from './types'
+import { getCollection } from './data/collections'
+import { points } from './data/points'
+import type { Ascent, Point } from './types'
 
 // Odznaki NIE są zapisywane w bazie. Za każdym razem wyliczamy je z listy wejść.
 // Dzięki temu nie mogą się "rozjechać" z danymi: usuniesz wejście, odznaka sama zniknie.
@@ -16,33 +17,31 @@ type BadgeDef = {
   measure: (p: Progress) => [number, number]
 }
 
-const ids = (filter: (p: (typeof peaks)[number]) => boolean) => peaks.filter(filter).map((p) => p.id)
+const ids = (filter: (p: Point) => boolean) => points.filter(filter).map((p) => p.id)
 const count = (p: Progress, list: string[]) => list.filter((id) => p.doneIds.has(id)).length
+/** Odznaka "zdobądź n punktów z listy" (n domyślnie = cała lista). */
+const atLeast = (list: string[], n = list.length) => (p: Progress): [number, number] => [Math.min(count(p, list), n), n]
 
+const PEAKS = getCollection('tatry-szczyty').pointIds
+const PASSES = getCollection('tatry-przelecze').pointIds
 const RED_PEAKS = ['kopa-kondracka', 'malolaczniak', 'krzesanica', 'ciemniak'] // Czerwone Wierchy
-const WEST = ids((p) => p.range === 'zachodnie')
-const ALL = ids(() => true)
-const TWO_THOUSANDERS = ids((p) => p.elevation >= 2000)
+const WEST = ids((p) => p.type === 'peak' && p.range === 'tatry-zachodnie')
+const TWO_THOUSANDERS = ids((p) => p.type === 'peak' && p.elevation >= 2000)
 
 export const BADGES: BadgeDef[] = [
-  { id: 'first', icon: '🥾', name: 'Pierwszy szczyt', description: 'Zdobądź dowolny szczyt',
-    measure: (p) => [Math.min(p.doneIds.size, 1), 1] },
-  { id: 'five', icon: '🖐️', name: 'Piątka', description: 'Zdobądź 5 szczytów',
-    measure: (p) => [Math.min(p.doneIds.size, 5), 5] },
-  { id: 'ten', icon: '🔟', name: 'Dziesiątka', description: 'Zdobądź 10 szczytów',
-    measure: (p) => [Math.min(p.doneIds.size, 10), 10] },
-  { id: '2000', icon: '⛰️', name: 'Dwutysięcznik', description: 'Wejdź na szczyt powyżej 2000 m',
-    measure: (p) => [Math.min(count(p, TWO_THOUSANDERS), 1), 1] },
-  { id: 'rysy', icon: '👑', name: 'Dach Polski', description: 'Zdobądź Rysy (2499 m)',
-    measure: (p) => [count(p, ['rysy']), 1] },
-  { id: 'red', icon: '🟥', name: 'Czerwone Wierchy', description: 'Wszystkie 4 szczyty Czerwonych Wierchów',
-    measure: (p) => [count(p, RED_PEAKS), RED_PEAKS.length] },
-  { id: 'gps', icon: '📍', name: 'Zweryfikowany', description: 'Zrób pierwszy check-in GPS na szczycie',
+  { id: 'first', icon: '🥾', name: 'Pierwszy szczyt', description: 'Zdobądź dowolny szczyt', measure: atLeast(PEAKS, 1) },
+  { id: 'five', icon: '🖐️', name: 'Piątka', description: 'Zdobądź 5 szczytów', measure: atLeast(PEAKS, 5) },
+  { id: 'ten', icon: '🔟', name: 'Dziesiątka', description: 'Zdobądź 10 szczytów', measure: atLeast(PEAKS, 10) },
+  { id: '2000', icon: '⛰️', name: 'Dwutysięcznik', description: 'Wejdź na szczyt powyżej 2000 m', measure: atLeast(TWO_THOUSANDERS, 1) },
+  { id: 'rysy', icon: '👑', name: 'Dach Polski', description: 'Zdobądź Rysy (2499 m)', measure: atLeast(['rysy']) },
+  { id: 'red', icon: '🟥', name: 'Czerwone Wierchy', description: 'Wszystkie 4 szczyty Czerwonych Wierchów', measure: atLeast(RED_PEAKS) },
+  { id: 'gps', icon: '📍', name: 'Zweryfikowany', description: 'Zrób pierwszy check-in GPS',
     measure: (p) => [p.gps ? 1 : 0, 1] },
-  { id: 'west', icon: '🌄', name: 'Komplet Zachodnich', description: 'Wszystkie szczyty Tatr Zachodnich z listy',
-    measure: (p) => [count(p, WEST), WEST.length] },
-  { id: 'all', icon: '🏆', name: 'Cała kolekcja', description: 'Wszystkie szczyty z listy',
-    measure: (p) => [count(p, ALL), ALL.length] },
+  { id: 'west', icon: '🌄', name: 'Komplet Zachodnich', description: 'Wszystkie szczyty Tatr Zachodnich z listy', measure: atLeast(WEST) },
+  { id: 'all', icon: '🏆', name: 'Szczyty Tatr', description: 'Wszystkie szczyty Tatr z listy', measure: atLeast(PEAKS) },
+  { id: 'pass-first', icon: '🪨', name: 'Pierwsza przełęcz', description: 'Przejdź dowolną przełęcz', measure: atLeast(PASSES, 1) },
+  { id: 'pass-five', icon: '🧭', name: 'Przełęczowy wędrowiec', description: 'Przejdź 5 przełęczy', measure: atLeast(PASSES, 5) },
+  { id: 'pass-all', icon: '🎖️', name: 'Przełęcze Tatr', description: 'Wszystkie przełęcze z listy', measure: atLeast(PASSES) },
 ]
 
 export type BadgeState = BadgeDef & { done: number; needed: number; earnedOn?: string }

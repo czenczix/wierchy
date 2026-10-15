@@ -2,7 +2,9 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { computeBadges } from '../badges'
 import BackupSection from '../components/BackupSection'
 import ProgressBar from '../components/ProgressBar'
-import { peaks } from '../data/peaks'
+import { collections } from '../data/collections'
+import { points } from '../data/points'
+import { ranges } from '../data/ranges'
 import { db } from '../db'
 import { ascentsLabel } from '../plural'
 
@@ -14,9 +16,9 @@ export default function ProgressPage() {
   if (!ascents) return null // baza jeszcze nie odpowiedziała
 
   const doneIds = new Set(ascents.map((a) => a.peakId))
-  const countIn = (range: string) => peaks.filter((p) => p.range === range)
-  const doneIn = (range: string) => countIn(range).filter((p) => doneIds.has(p.id)).length
-  const pct = Math.round((doneIds.size / peaks.length) * 100)
+  const doneOf = (ids: string[]) => ids.filter((id) => doneIds.has(id)).length
+  const doneAll = doneOf(points.map((p) => p.id))
+  const pct = Math.round((doneAll / points.length) * 100)
   const badges = computeBadges(ascents)
   const earned = badges.filter((b) => b.earnedOn).length
 
@@ -26,12 +28,20 @@ export default function ProgressPage() {
 
       <div className="progress-hero">
         <div className="progress-big">{pct}%</div>
-        <div className="muted">{doneIds.size} z {peaks.length} szczytów · {ascentsLabel(ascents.length)}</div>
-        <ProgressBar done={doneIds.size} total={peaks.length} />
+        <div className="muted">{doneAll} z {points.length} miejsc · {ascentsLabel(ascents.length)}</div>
+        <ProgressBar done={doneAll} total={points.length} />
       </div>
 
-      <ProgressBar label="Tatry Wysokie" done={doneIn('wysokie')} total={countIn('wysokie').length} />
-      <ProgressBar label="Tatry Zachodnie" done={doneIn('zachodnie')} total={countIn('zachodnie').length} />
+      <h2>Kolekcje</h2>
+      {collections.map((c) => (
+        <ProgressBar key={c.id} label={`${c.icon} ${c.name}`} done={doneOf(c.pointIds)} total={c.pointIds.length} />
+      ))}
+
+      <h2>Pasma</h2>
+      {ranges.map((r) => {
+        const ids = points.filter((p) => p.range === r.id).map((p) => p.id)
+        return <ProgressBar key={r.id} label={r.name} done={doneOf(ids)} total={ids.length} />
+      })}
 
       <h2>Odznaki ({earned} z {badges.length})</h2>
       <ul className="badges">

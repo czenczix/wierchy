@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom'
-import type { Peak } from '../types'
+import type { Point } from '../types'
 
-// Komponent dostaje dane przez "propsy" (tu: szczyt i czy jest zdobyty) i tylko je wyświetla.
-// Ten sam komponent rysuje każdy wiersz listy, raz dla Rysów, raz dla Giewontu itd.
-type Props = { peak: Peak; done: boolean }
+// Komponent dostaje dane przez "propsy" (tu: punkt i czy jest zdobyty) i tylko je wyświetla.
+// Ten sam komponent rysuje każdy wiersz listy, raz dla Rysów, raz dla Zawratu itd.
+type Props = { peak: Point; done: boolean }
 
 export default function PeakRow({ peak, done }: Props) {
   return (
@@ -12,6 +12,7 @@ export default function PeakRow({ peak, done }: Props) {
         <span className="peak-name">
           {done && <span className="done-mark" aria-label="zdobyty">✓ </span>}
           {peak.name}
+          {peak.type === 'pass' && <span className="tag">przełęcz</span>}
         </span>
         <span className="peak-ele">{peak.elevation} m</span>
       </Link>

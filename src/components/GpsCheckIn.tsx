@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { db, today } from '../db'
 import { CHECKIN_RADIUS_M, MAX_ACCURACY_M, distanceM, formatDistance, getPosition } from '../geo'
-import type { Peak } from '../types'
+import type { Point } from '../types'
 
 type Status =
   | { kind: 'idle' }
@@ -11,7 +11,7 @@ type Status =
   | { kind: 'inaccurate'; accuracy: number }
   | { kind: 'error'; message: string }
 
-export default function GpsCheckIn({ peak }: { peak: Peak }) {
+export default function GpsCheckIn({ peak }: { peak: Point }) {
   const [status, setStatus] = useState<Status>({ kind: 'idle' })
 
   async function checkIn() {

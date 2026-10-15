@@ -4,6 +4,8 @@
   --text: #1d1f1c;
   --muted: #6b6f68;
   --accent: #1f4d3a;
+  --pass: #9a4f12; /* kolor przełęczy na liście i mapie */
+  --pass-bg: #f6e3d2;
   --card: #ffffff;
   --border: #e2e0d8;
   --tabbar-h: 60px;
@@ -18,6 +20,8 @@
     --text: #ecebe6;
     --muted: #9da199;
     --accent: #7fc8a2;
+    --pass: #f0a868;
+    --pass-bg: #3d2a1c;
     --card: #1e211e;
     --border: #2f332f;
   }
@@ -52,11 +56,16 @@ a { color: var(--accent); }
   padding: 14px 16px; text-decoration: none; color: var(--text);
 }
 .peak-name { font-weight: 500; }
-.peak-ele { color: var(--muted); font-variant-numeric: tabular-nums; }
+.tag {
+  margin-left: 8px; padding: 1px 8px; border-radius: 999px; font-size: 0.75rem; font-weight: 400;
+  background: var(--pass-bg); color: var(--pass);
+}
+.peak-ele { white-space: nowrap; color: var(--muted); font-variant-numeric: tabular-nums; }
 .back { display: inline-block; margin-bottom: 12px; text-decoration: none; }
 
 /* Filtry nad listą */
-.chips { display: flex; gap: 8px; margin-top: 12px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.chips + .chips { margin-top: 8px; }
 .chip {
   border: 1px solid var(--border); background: var(--card); color: var(--text);
   border-radius: 999px; padding: 6px 14px; font: inherit; font-size: 0.875rem;

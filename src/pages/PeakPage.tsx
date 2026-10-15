@@ -4,11 +4,10 @@ import { Link, useParams } from 'react-router-dom'
 import AscentForm from '../components/AscentForm'
 import AscentPhoto from '../components/AscentPhoto'
 import GpsCheckIn from '../components/GpsCheckIn'
-import { getPeak } from '../data/peaks'
+import { TYPE_LABEL, getPoint } from '../data/points'
+import { getRange } from '../data/ranges'
 import { db } from '../db'
 import type { Ascent } from '../types'
-
-const RANGE_LABEL = { wysokie: 'Tatry Wysokie', zachodnie: 'Tatry Zachodnie' }
 
 const formatDate = (iso: string) =>
   new Date(iso + 'T12:00').toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -16,7 +15,7 @@ const formatDate = (iso: string) =>
 export default function PeakPage() {
   // useParams odczytuje zmienną część adresu: dla /szczyt/rysy zwraca { id: 'rysy' }.
   const { id = '' } = useParams()
-  const peak = getPeak(id)
+  const peak = getPoint(id)
   const [formOpen, setFormOpen] = useState(false)
 
   // useLiveQuery pyta bazę i sam odświeża ekran, gdy dane w bazie się zmienią
@@ -30,8 +29,8 @@ export default function PeakPage() {
   if (!peak) {
     return (
       <section>
-        <Link to="/" className="back">← Szczyty</Link>
-        <h1>Nie ma takiego szczytu</h1>
+        <Link to="/" className="back">← Lista</Link>
+        <h1>Nie ma takiego miejsca</h1>
       </section>
     )
   }
@@ -44,15 +43,17 @@ export default function PeakPage() {
 
   return (
     <section>
-      <Link to="/" className="back">← Szczyty</Link>
+      <Link to="/" className="back">← Lista</Link>
       <h1>
         {peak.name} {ascents && ascents.length > 0 && <span className="done-mark" title="Zdobyty">✓</span>}
       </h1>
       <p className="peak-big-ele">{peak.elevation} m n.p.m.</p>
 
       <dl className="facts">
-        <dt>Część</dt>
-        <dd>{RANGE_LABEL[peak.range]}</dd>
+        <dt>Rodzaj</dt>
+        <dd>{TYPE_LABEL[peak.type]}</dd>
+        <dt>Pasmo</dt>
+        <dd>{getRange(peak.range)?.name ?? peak.range}</dd>
         <dt>Współrzędne</dt>
         <dd>
           {peak.lat.toFixed(5)}° N, {peak.lon.toFixed(5)}° E
