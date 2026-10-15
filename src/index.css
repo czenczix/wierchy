@@ -149,6 +149,17 @@ h2 { font-size: 1.1rem; margin: 24px 0 0; }
 .badge.earned { border: 1px solid var(--accent); background: var(--card); color: var(--text); }
 .badge.earned .badge-icon { filter: none; opacity: 1; }
 .badge.earned .badge-date { color: var(--accent); }
+/* Poziomy odznak: kolor ramki i etykiety */
+.badge-tier { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 1px 8px; border-radius: 999px; margin: 2px 0; }
+.tier-1 { border-color: #b0703a !important; } .tier-1 .badge-tier { background: #f1dcc8; color: #7a4415; }
+.tier-2 { border-color: #9aa3ab !important; } .tier-2 .badge-tier { background: #e3e7ea; color: #4b545c; }
+.tier-3 { border-color: #d4a514 !important; } .tier-3 .badge-tier { background: #f8ebbd; color: #7a5c00; }
+.tier-4 { border-color: #3fb8d6 !important; } .tier-4 .badge-tier { background: #d3f1f8; color: #10627a; }
+.badge.complete { box-shadow: 0 0 0 2px var(--accent) inset; }
+.badge-count { font-size: 0.75rem; margin-top: 4px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.badge-track { display: block; width: 80%; height: 4px; border-radius: 2px; background: var(--border); overflow: hidden; margin-top: 3px; }
+.badge-track span { display: block; height: 100%; background: var(--accent); }
+h3 { font-size: 0.95rem; margin: 18px 0 0; color: var(--muted); font-weight: 600; }
 
 .offline-banner {
   position: sticky; top: 0; z-index: 1001; padding: 8px 16px; font-size: 0.85rem; text-align: center;

@@ -1,5 +1,5 @@
 import { useLiveQuery } from 'dexie-react-hooks'
-import { computeBadges } from '../badges'
+import { computeBadges, tierName, type BadgeState, type Category } from '../badges'
 import BackupSection from '../components/BackupSection'
 import ProgressBar from '../components/ProgressBar'
 import { collections } from '../data/collections'
@@ -11,6 +11,33 @@ import { ascentsLabel } from '../plural'
 const formatDate = (iso: string) =>
   new Date(iso + 'T12:00').toLocaleDateString('pl-PL', { day: 'numeric', month: 'short', year: 'numeric' })
 
+const CATEGORIES: Category[] = ['Kolekcje', 'Wędrówki', 'Wyzwania']
+
+// Jedna odznaka: ikona, poziom (brąz/srebro/...), cel i postęp do następnego progu.
+function BadgeCard({ b }: { b: BadgeState }) {
+  const complete = b.next === undefined
+  const tier = tierName(b)
+  const classes = ['badge', b.level > 0 && 'earned', tier && `tier-${b.level}`, complete && 'complete'].filter(Boolean).join(' ')
+  const unit = b.id === 'metres' ? ' m' : ''
+  return (
+    <li className={classes}>
+      <span className="badge-icon" aria-hidden="true">{b.icon}</span>
+      <strong>{b.name}</strong>
+      {tier && <span className="badge-tier">{tier}</span>}
+      <span className="badge-desc">{complete ? b.goal(b.tiers[b.tiers.length - 1]) : b.goal(b.next!)}</span>
+      {b.level > 0 && <span className="badge-date">{formatDate(b.tierDates[b.level - 1])}</span>}
+      {!complete && b.next! > 1 && (
+        <>
+          <span className="badge-count">
+            {b.current.toLocaleString('pl-PL')}{unit} / {b.next!.toLocaleString('pl-PL')}{unit}
+          </span>
+          <span className="badge-track"><span style={{ width: `${Math.min(100, (b.current / b.next!) * 100)}%` }} /></span>
+        </>
+      )}
+    </li>
+  )
+}
+
 export default function ProgressPage() {
   const ascents = useLiveQuery(() => db.ascents.toArray())
   if (!ascents) return null // baza jeszcze nie odpowiedziała
@@ -20,7 +47,8 @@ export default function ProgressPage() {
   const doneAll = doneOf(points.map((p) => p.id))
   const pct = Math.round((doneAll / points.length) * 100)
   const badges = computeBadges(ascents)
-  const earned = badges.filter((b) => b.earnedOn).length
+  const levels = badges.reduce((sum, b) => sum + b.level, 0)
+  const allLevels = badges.reduce((sum, b) => sum + b.tiers.length, 0)
 
   return (
     <section>
@@ -45,21 +73,16 @@ export default function ProgressPage() {
         return <ProgressBar key={r.id} label={r.name} done={doneOf(ids)} total={ids.length} />
       })}
 
-      <h2>Odznaki ({earned} z {badges.length})</h2>
-      <ul className="badges">
-        {badges.map((b) => (
-          <li key={b.id} className={b.earnedOn ? 'badge earned' : 'badge'}>
-            <span className="badge-icon" aria-hidden="true">{b.icon}</span>
-            <strong>{b.name}</strong>
-            <span className="badge-desc">{b.description}</span>
-            {b.earnedOn ? (
-              <span className="badge-date">{formatDate(b.earnedOn)}</span>
-            ) : (
-              b.needed > 1 && <span className="badge-date">{b.done} / {b.needed}</span>
-            )}
-          </li>
-        ))}
-      </ul>
+      <h2>Odznaki</h2>
+      <p className="muted">Zdobyte poziomy: {levels} z {allLevels}</p>
+      {CATEGORIES.map((cat) => (
+        <div key={cat}>
+          <h3>{cat}</h3>
+          <ul className="badges">
+            {badges.filter((b) => b.category === cat).map((b) => <BadgeCard key={b.id} b={b} />)}
+          </ul>
+        </div>
+      ))}
 
       <BackupSection />
     </section>
