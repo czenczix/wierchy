@@ -8,7 +8,7 @@ on:
       what:
         description: Co pobrać
         type: choice
-        options: [peaks, passes, peaks-pl]
+        options: [peaks, passes, peaks-pl, peaks-diadem]
         default: peaks
 
 permissions:

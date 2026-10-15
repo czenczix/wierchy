@@ -1,0 +1,502 @@
+[
+  {
+    "id": "wielka-czantoria",
+    "name": "Wielka Czantoria",
+    "type": "peak",
+    "elevation": 995,
+    "lat": 49.679,
+    "lon": 18.806,
+    "range": "beskid-slaski",
+    "osmId": 0
+  },
+  {
+    "id": "klimczok",
+    "name": "Klimczok",
+    "type": "peak",
+    "elevation": 1117,
+    "lat": 49.733,
+    "lon": 19.006,
+    "range": "beskid-slaski",
+    "osmId": 0
+  },
+  {
+    "id": "lamana-skala",
+    "name": "Łamana Skała",
+    "type": "peak",
+    "elevation": 929,
+    "lat": 49.774,
+    "lon": 19.355,
+    "range": "beskid-maly",
+    "osmId": 0
+  },
+  {
+    "id": "wielka-racza",
+    "name": "Wielka Racza",
+    "type": "peak",
+    "elevation": 1236,
+    "lat": 49.417,
+    "lon": 18.99,
+    "range": "beskid-zywiecki",
+    "osmId": 0
+  },
+  {
+    "id": "pilsko",
+    "name": "Pilsko (Góra Pięciu Kopców)",
+    "type": "peak",
+    "elevation": 1534,
+    "lat": 49.544,
+    "lon": 19.325,
+    "range": "beskid-zywiecki",
+    "osmId": 0
+  },
+  {
+    "id": "jalowiec",
+    "name": "Jałowiec",
+    "type": "peak",
+    "elevation": 1111,
+    "lat": 49.665,
+    "lon": 19.49,
+    "range": "beskid-zywiecki",
+    "osmId": 0
+  },
+  {
+    "id": "polica",
+    "name": "Polica",
+    "type": "peak",
+    "elevation": 1369,
+    "lat": 49.623,
+    "lon": 19.626,
+    "range": "beskid-zywiecki",
+    "osmId": 0
+  },
+  {
+    "id": "bukowinski-wierch",
+    "name": "Bukowiński Wierch",
+    "type": "peak",
+    "elevation": 940,
+    "lat": 49.585,
+    "lon": 19.86,
+    "range": "beskid-zywiecki",
+    "osmId": 0
+  },
+  {
+    "id": "lasek",
+    "name": "Lasek (Łosek)",
+    "type": "peak",
+    "elevation": 868,
+    "lat": 49.73,
+    "lon": 19.66,
+    "range": "beskid-makowski",
+    "osmId": 0
+  },
+  {
+    "id": "babica",
+    "name": "Babica",
+    "type": "peak",
+    "elevation": 728,
+    "lat": 49.83,
+    "lon": 19.75,
+    "range": "beskid-makowski",
+    "osmId": 0
+  },
+  {
+    "id": "koskowa-gora",
+    "name": "Koskowa Góra",
+    "type": "peak",
+    "elevation": 867,
+    "lat": 49.74,
+    "lon": 19.77,
+    "range": "beskid-makowski",
+    "osmId": 0
+  },
+  {
+    "id": "lubon-wielki",
+    "name": "Luboń Wielki",
+    "type": "peak",
+    "elevation": 1022,
+    "lat": 49.65,
+    "lon": 19.99,
+    "range": "beskid-wyspowy",
+    "osmId": 0
+  },
+  {
+    "id": "cwilin",
+    "name": "Ćwilin",
+    "type": "peak",
+    "elevation": 1072,
+    "lat": 49.68,
+    "lon": 20.23,
+    "range": "beskid-wyspowy",
+    "osmId": 0
+  },
+  {
+    "id": "modyn",
+    "name": "Modyń",
+    "type": "peak",
+    "elevation": 1029,
+    "lat": 49.66,
+    "lon": 20.41,
+    "range": "beskid-wyspowy",
+    "osmId": 0
+  },
+  {
+    "id": "jaworz",
+    "name": "Jaworz",
+    "type": "peak",
+    "elevation": 918,
+    "lat": 49.7,
+    "lon": 20.48,
+    "range": "beskid-wyspowy",
+    "osmId": 0
+  },
+  {
+    "id": "luban",
+    "name": "Lubań",
+    "type": "peak",
+    "elevation": 1225,
+    "lat": 49.47,
+    "lon": 20.33,
+    "range": "gorce",
+    "osmId": 0
+  },
+  {
+    "id": "jaworzyna-krynicka",
+    "name": "Jaworzyna Krynicka",
+    "type": "peak",
+    "elevation": 1114,
+    "lat": 49.42,
+    "lon": 20.89,
+    "range": "beskid-sadecki",
+    "osmId": 0
+  },
+  {
+    "id": "kraczonik",
+    "name": "Kraczonik",
+    "type": "peak",
+    "elevation": 934,
+    "lat": 49.43,
+    "lon": 20.98,
+    "range": "beskid-sadecki",
+    "osmId": 0
+  },
+  {
+    "id": "jaworze",
+    "name": "Jaworze",
+    "type": "peak",
+    "elevation": 882,
+    "lat": 49.62,
+    "lon": 21.25,
+    "range": "beskid-niski",
+    "osmId": 0
+  },
+  {
+    "id": "watkowa",
+    "name": "Wątkowa",
+    "type": "peak",
+    "elevation": 846,
+    "lat": 49.58,
+    "lon": 21.31,
+    "range": "beskid-niski",
+    "osmId": 0
+  },
+  {
+    "id": "baranie",
+    "name": "Baranie",
+    "type": "peak",
+    "elevation": 754,
+    "lat": 49.49,
+    "lon": 21.46,
+    "range": "beskid-niski",
+    "osmId": 0
+  },
+  {
+    "id": "kamien-jasliska",
+    "name": "Kamień",
+    "type": "peak",
+    "elevation": 857,
+    "lat": 49.4,
+    "lon": 21.8,
+    "range": "beskid-niski",
+    "osmId": 0
+  },
+  {
+    "id": "tokarnia",
+    "name": "Tokarnia",
+    "type": "peak",
+    "elevation": 778,
+    "lat": 49.52,
+    "lon": 21.8,
+    "range": "beskid-niski",
+    "osmId": 0
+  },
+  {
+    "id": "zar-branisko",
+    "name": "Żar (Branisko)",
+    "type": "peak",
+    "elevation": 883,
+    "lat": 49.42,
+    "lon": 20.25,
+    "range": "pieniny",
+    "osmId": 0
+  },
+  {
+    "id": "trzy-korony",
+    "name": "Trzy Korony",
+    "type": "peak",
+    "elevation": 982,
+    "lat": 49.414,
+    "lon": 20.41,
+    "range": "pieniny",
+    "osmId": 0
+  },
+  {
+    "id": "slonny",
+    "name": "Słonny",
+    "type": "peak",
+    "elevation": 668,
+    "lat": 49.58,
+    "lon": 22.33,
+    "range": "gory-sanocko-turczanskie",
+    "osmId": 0
+  },
+  {
+    "id": "slonny-wierch",
+    "name": "Słonny Wierch (wsch.)",
+    "type": "peak",
+    "elevation": 668,
+    "lat": 49.57,
+    "lon": 22.4,
+    "range": "gory-sanocko-turczanskie",
+    "osmId": 0
+  },
+  {
+    "id": "jaworniki",
+    "name": "Jaworniki",
+    "type": "peak",
+    "elevation": 908,
+    "lat": 49.55,
+    "lon": 22.45,
+    "range": "gory-sanocko-turczanskie",
+    "osmId": 0
+  },
+  {
+    "id": "trohaniec",
+    "name": "Trohaniec",
+    "type": "peak",
+    "elevation": 939,
+    "lat": 49.3,
+    "lon": 22.27,
+    "range": "bieszczady",
+    "osmId": 0
+  },
+  {
+    "id": "lopiennik",
+    "name": "Łopiennik",
+    "type": "peak",
+    "elevation": 1069,
+    "lat": 49.23,
+    "lon": 22.39,
+    "range": "bieszczady",
+    "osmId": 0
+  },
+  {
+    "id": "wolosan",
+    "name": "Wołosań",
+    "type": "peak",
+    "elevation": 1071,
+    "lat": 49.2,
+    "lon": 22.3,
+    "range": "bieszczady",
+    "osmId": 0
+  },
+  {
+    "id": "wielka-rawka",
+    "name": "Wielka Rawka",
+    "type": "peak",
+    "elevation": 1307,
+    "lat": 49.093,
+    "lon": 22.585,
+    "range": "bieszczady",
+    "osmId": 0
+  },
+  {
+    "id": "skalny-stol",
+    "name": "Skalny Stół",
+    "type": "peak",
+    "elevation": 1282,
+    "lat": 50.765,
+    "lon": 15.85,
+    "range": "karkonosze",
+    "osmId": 0
+  },
+  {
+    "id": "lysocina",
+    "name": "Łysocina",
+    "type": "peak",
+    "elevation": 1188,
+    "lat": 50.72,
+    "lon": 15.97,
+    "range": "karkonosze",
+    "osmId": 0
+  },
+  {
+    "id": "okole",
+    "name": "Okole",
+    "type": "peak",
+    "elevation": 721,
+    "lat": 50.97,
+    "lon": 15.95,
+    "range": "gory-kaczawskie",
+    "osmId": 0
+  },
+  {
+    "id": "maslak",
+    "name": "Maślak (Folwarczna)",
+    "type": "peak",
+    "elevation": 723,
+    "lat": 51,
+    "lon": 15.78,
+    "range": "gory-kaczawskie",
+    "osmId": 0
+  },
+  {
+    "id": "baraniec",
+    "name": "Baraniec",
+    "type": "peak",
+    "elevation": 720,
+    "lat": 50.95,
+    "lon": 15.8,
+    "range": "gory-kaczawskie",
+    "osmId": 0
+  },
+  {
+    "id": "poreba",
+    "name": "Poręba",
+    "type": "peak",
+    "elevation": 671,
+    "lat": 51.02,
+    "lon": 15.83,
+    "range": "gory-kaczawskie",
+    "osmId": 0
+  },
+  {
+    "id": "krzyzna-gora",
+    "name": "Krzyżna Góra",
+    "type": "peak",
+    "elevation": 654,
+    "lat": 50.83,
+    "lon": 15.85,
+    "range": "rudawy-janowickie",
+    "osmId": 0
+  },
+  {
+    "id": "trojgarb",
+    "name": "Trójgarb",
+    "type": "peak",
+    "elevation": 778,
+    "lat": 50.82,
+    "lon": 16.2,
+    "range": "gory-walbrzyskie",
+    "osmId": 0
+  },
+  {
+    "id": "borowa",
+    "name": "Borowa",
+    "type": "peak",
+    "elevation": 853,
+    "lat": 50.73,
+    "lon": 16.3,
+    "range": "gory-walbrzyskie",
+    "osmId": 0
+  },
+  {
+    "id": "lesista-wielka",
+    "name": "Lesista Wielka",
+    "type": "peak",
+    "elevation": 851,
+    "lat": 50.68,
+    "lon": 16.19,
+    "range": "gory-kamienne",
+    "osmId": 0
+  },
+  {
+    "id": "szeroka",
+    "name": "Szeroka",
+    "type": "peak",
+    "elevation": 842,
+    "lat": 50.65,
+    "lon": 16.33,
+    "range": "gory-kamienne",
+    "osmId": 0
+  },
+  {
+    "id": "janski-wierch",
+    "name": "Jański Wierch",
+    "type": "peak",
+    "elevation": 697,
+    "lat": 50.58,
+    "lon": 16.33,
+    "range": "gory-jastrzebie",
+    "osmId": 0
+  },
+  {
+    "id": "rog",
+    "name": "Róg",
+    "type": "peak",
+    "elevation": 715,
+    "lat": 50.43,
+    "lon": 16.48,
+    "range": "gory-stolowe",
+    "osmId": 0
+  },
+  {
+    "id": "jagodna-polnocna",
+    "name": "Jagodna Północna",
+    "type": "peak",
+    "elevation": 985,
+    "lat": 50.27,
+    "lon": 16.56,
+    "range": "gory-bystrzyckie",
+    "osmId": 0
+  },
+  {
+    "id": "wlodarz",
+    "name": "Włodarz",
+    "type": "peak",
+    "elevation": 811,
+    "lat": 50.68,
+    "lon": 16.4,
+    "range": "gory-sowie",
+    "osmId": 0
+  },
+  {
+    "id": "szeroka-gora",
+    "name": "Szeroka Góra",
+    "type": "peak",
+    "elevation": 766,
+    "lat": 50.48,
+    "lon": 16.7,
+    "range": "gory-bardzkie",
+    "osmId": 0
+  },
+  {
+    "id": "postawna",
+    "name": "Postawna",
+    "type": "peak",
+    "elevation": 1117,
+    "lat": 50.3,
+    "lon": 16.97,
+    "range": "gory-bialskie",
+    "osmId": 0
+  },
+  {
+    "id": "suchon",
+    "name": "Suchoń",
+    "type": "peak",
+    "elevation": 960,
+    "lat": 50.27,
+    "lon": 16.83,
+    "range": "masyw-snieznika",
+    "osmId": 0
+  }
+]
