@@ -1,9 +1,10 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import AscentForm from '../components/AscentForm'
 import AscentPhoto from '../components/AscentPhoto'
 import GpsCheckIn from '../components/GpsCheckIn'
+import { collectionsOf } from '../data/collections'
 import { TYPE_LABEL, getPoint } from '../data/points'
 import { getRange } from '../data/ranges'
 import { db } from '../db'
@@ -17,6 +18,14 @@ export default function PeakPage() {
   const { id = '' } = useParams()
   const peak = getPoint(id)
   const [formOpen, setFormOpen] = useState(false)
+  const navigate = useNavigate()
+  // Wracamy tam, skąd przyszedłeś (lista Tatr albo Korona). Gdy karta otwarta z linku, idziemy na start.
+  const back = (e: React.MouseEvent) => {
+    if (window.history.length > 1) {
+      e.preventDefault()
+      navigate(-1)
+    }
+  }
 
   // useLiveQuery pyta bazę i sam odświeża ekran, gdy dane w bazie się zmienią
   // (np. po zapisaniu nowego wejścia). Dopóki baza nie odpowie, zwraca undefined.
@@ -29,7 +38,7 @@ export default function PeakPage() {
   if (!peak) {
     return (
       <section>
-        <Link to="/" className="back">← Lista</Link>
+        <Link to="/" className="back" onClick={back}>← Wróć</Link>
         <h1>Nie ma takiego miejsca</h1>
       </section>
     )
@@ -43,7 +52,7 @@ export default function PeakPage() {
 
   return (
     <section>
-      <Link to="/" className="back">← Lista</Link>
+      <Link to="/" className="back" onClick={back}>← Wróć</Link>
       <h1>
         {peak.name} {ascents && ascents.length > 0 && <span className="done-mark" title="Zdobyty">✓</span>}
       </h1>
@@ -54,6 +63,8 @@ export default function PeakPage() {
         <dd>{TYPE_LABEL[peak.type]}</dd>
         <dt>Pasmo</dt>
         <dd>{getRange(peak.range)?.name ?? peak.range}</dd>
+        <dt>Kolekcje</dt>
+        <dd>{collectionsOf(peak.id).map((c) => `${c.icon} ${c.name}`).join(', ')}</dd>
         <dt>Współrzędne</dt>
         <dd>
           {peak.lat.toFixed(5)}° N, {peak.lon.toFixed(5)}° E

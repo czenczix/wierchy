@@ -1,11 +1,12 @@
 import type { Point } from '../types'
 import rawPasses from './passes.json'
+import rawPeaksPl from './peaks-pl.json'
 import rawPeaks from './peaks.json'
 
 // Jedno miejsce, z którego reszta apki bierze punkty. Każdy rodzaj ma swój plik JSON
 // (bo każdy ma swój skrypt pobierający z OSM), a tu łączymy je w jedną listę.
 // "as Point[]" mówi TypeScriptowi: ufamy, że JSON ma kształt typu Point.
-export const points = [...rawPeaks, ...rawPasses] as Point[]
+export const points = [...rawPeaks, ...rawPasses, ...rawPeaksPl] as Point[]
 
 export function getPoint(id: string): Point | undefined {
   return points.find((p) => p.id === id)

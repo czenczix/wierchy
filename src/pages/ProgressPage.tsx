@@ -40,6 +40,8 @@ export default function ProgressPage() {
       <h2>Pasma</h2>
       {ranges.map((r) => {
         const ids = points.filter((p) => p.range === r.id).map((p) => p.id)
+        // Pasma z jednym punktem (np. Ślęża) pomijamy, bo pasek 0/1 nic nie mówi.
+        if (ids.length < 2) return null
         return <ProgressBar key={r.id} label={r.name} done={doneOf(ids)} total={ids.length} />
       })}
 

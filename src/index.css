@@ -56,6 +56,11 @@ a { color: var(--accent); }
   padding: 14px 16px; text-decoration: none; color: var(--text);
 }
 .peak-name { font-weight: 500; }
+.peak-sub { display: block; font-size: 0.8rem; font-weight: 400; color: var(--muted); }
+.crown-hero { text-align: center; padding: 8px 0 4px; }
+.crown-icon { font-size: 3rem; line-height: 1; }
+.crown-hero.complete .crown-icon { filter: drop-shadow(0 0 10px #e8b923); }
+.group-head { display: flex; justify-content: space-between; align-items: baseline; }
 .tag {
   margin-left: 8px; padding: 1px 8px; border-radius: 999px; font-size: 0.75rem; font-weight: 400;
   background: var(--pass-bg); color: var(--pass);

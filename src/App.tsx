@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom'
 import OfflineBanner from './components/OfflineBanner'
 import TabBar from './components/TabBar'
+import CrownPage from './pages/CrownPage'
 import ListPage from './pages/ListPage'
 import MapPage from './pages/MapPage'
 import PeakPage from './pages/PeakPage'
@@ -15,6 +16,7 @@ export default function App() {
       <main className="screen">
         <Routes>
           <Route path="/" element={<ListPage />} />
+          <Route path="/korona" element={<CrownPage />} />
           <Route path="/mapa" element={<MapPage />} />
           <Route path="/postep" element={<ProgressPage />} />
           <Route path="/szczyt/:id" element={<PeakPage />} />

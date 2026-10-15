@@ -1,5 +1,6 @@
 import { getCollection } from './data/collections'
 import { points } from './data/points'
+import { groupOf } from './data/ranges'
 import type { Ascent, Point } from './types'
 
 // Odznaki NIE są zapisywane w bazie. Za każdym razem wyliczamy je z listy wejść.
@@ -22,25 +23,36 @@ const count = (p: Progress, list: string[]) => list.filter((id) => p.doneIds.has
 /** Odznaka "zdobądź n punktów z listy" (n domyślnie = cała lista). */
 const atLeast = (list: string[], n = list.length) => (p: Progress): [number, number] => [Math.min(count(p, list), n), n]
 
-const PEAKS = getCollection('tatry-szczyty').pointIds
+const ALL_PEAKS = ids((p) => p.type === 'peak')
+const TATRA_PEAKS = getCollection('tatry-szczyty').pointIds
 const PASSES = getCollection('tatry-przelecze').pointIds
+const KGP = getCollection('kgp').pointIds
+const kgpIn = (group: string) => KGP.filter((id) => groupOf(points.find((p) => p.id === id)!.range) === group)
+const KGP_SUDETY = kgpIn('Sudety')
+const KGP_KARPATY = kgpIn('Karpaty').concat(kgpIn('Tatry')) // Tatry też są częścią Karpat
 const RED_PEAKS = ['kopa-kondracka', 'malolaczniak', 'krzesanica', 'ciemniak'] // Czerwone Wierchy
 const WEST = ids((p) => p.type === 'peak' && p.range === 'tatry-zachodnie')
 const TWO_THOUSANDERS = ids((p) => p.type === 'peak' && p.elevation >= 2000)
 
 export const BADGES: BadgeDef[] = [
-  { id: 'first', icon: '🥾', name: 'Pierwszy szczyt', description: 'Zdobądź dowolny szczyt', measure: atLeast(PEAKS, 1) },
-  { id: 'five', icon: '🖐️', name: 'Piątka', description: 'Zdobądź 5 szczytów', measure: atLeast(PEAKS, 5) },
-  { id: 'ten', icon: '🔟', name: 'Dziesiątka', description: 'Zdobądź 10 szczytów', measure: atLeast(PEAKS, 10) },
+  { id: 'first', icon: '🥾', name: 'Pierwszy szczyt', description: 'Zdobądź dowolny szczyt', measure: atLeast(ALL_PEAKS, 1) },
+  { id: 'five', icon: '🖐️', name: 'Piątka', description: 'Zdobądź 5 szczytów', measure: atLeast(ALL_PEAKS, 5) },
+  { id: 'ten', icon: '🔟', name: 'Dziesiątka', description: 'Zdobądź 10 szczytów', measure: atLeast(ALL_PEAKS, 10) },
   { id: '2000', icon: '⛰️', name: 'Dwutysięcznik', description: 'Wejdź na szczyt powyżej 2000 m', measure: atLeast(TWO_THOUSANDERS, 1) },
-  { id: 'rysy', icon: '👑', name: 'Dach Polski', description: 'Zdobądź Rysy (2499 m)', measure: atLeast(['rysy']) },
+  { id: 'rysy', icon: '🏔️', name: 'Dach Polski', description: 'Zdobądź Rysy (2499 m)', measure: atLeast(['rysy']) },
   { id: 'red', icon: '🟥', name: 'Czerwone Wierchy', description: 'Wszystkie 4 szczyty Czerwonych Wierchów', measure: atLeast(RED_PEAKS) },
   { id: 'gps', icon: '📍', name: 'Zweryfikowany', description: 'Zrób pierwszy check-in GPS',
     measure: (p) => [p.gps ? 1 : 0, 1] },
   { id: 'west', icon: '🌄', name: 'Komplet Zachodnich', description: 'Wszystkie szczyty Tatr Zachodnich z listy', measure: atLeast(WEST) },
-  { id: 'all', icon: '🏆', name: 'Szczyty Tatr', description: 'Wszystkie szczyty Tatr z listy', measure: atLeast(PEAKS) },
+  { id: 'all', icon: '🏆', name: 'Szczyty Tatr', description: 'Wszystkie szczyty Tatr z listy', measure: atLeast(TATRA_PEAKS) },
   { id: 'pass-first', icon: '🪨', name: 'Pierwsza przełęcz', description: 'Przejdź dowolną przełęcz', measure: atLeast(PASSES, 1) },
   { id: 'pass-five', icon: '🧭', name: 'Przełęczowy wędrowiec', description: 'Przejdź 5 przełęczy', measure: atLeast(PASSES, 5) },
+  { id: 'kgp-7', icon: '🥉', name: 'Ćwierć Korony', description: '7 szczytów Korony Gór Polskich', measure: atLeast(KGP, 7) },
+  { id: 'kgp-14', icon: '🥈', name: 'Pół Korony', description: '14 szczytów Korony Gór Polskich', measure: atLeast(KGP, 14) },
+  { id: 'kgp-21', icon: '🥇', name: 'Trzy czwarte Korony', description: '21 szczytów Korony Gór Polskich', measure: atLeast(KGP, 21) },
+  { id: 'kgp', icon: '👑', name: 'Korona Gór Polskich', description: 'Wszystkie 28 szczytów Korony', measure: atLeast(KGP) },
+  { id: 'kgp-sudety', icon: '🏰', name: 'Sudecka Korona', description: 'Wszystkie szczyty Korony w Sudetach', measure: atLeast(KGP_SUDETY) },
+  { id: 'kgp-karpaty', icon: '🌲', name: 'Karpacka Korona', description: 'Wszystkie szczyty Korony w Karpatach', measure: atLeast(KGP_KARPATY) },
   { id: 'pass-all', icon: '🎖️', name: 'Przełęcze Tatr', description: 'Wszystkie przełęcze z listy', measure: atLeast(PASSES) },
 ]
 

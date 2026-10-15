@@ -3,8 +3,8 @@
 //
 // Uruchomienie: node scripts/fetch-peaks-pl.mjs
 //
-// Szukamy po nazwie w całej południowej Polsce, a potem sprawdzamy, czy trafienie leży
-// blisko naszego przybliżonego położenia (do 8 km). Wysokości bierzemy z oficjalnej listy KGP.
+// Szukamy w okolicy naszego przybliżonego położenia i sprawdzamy nazwę oraz wysokość.
+// Wysokości bierzemy z oficjalnej listy KGP.
 
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { distanceM, namesOf, printJson, runQuery } from './overpass.mjs'
@@ -40,33 +40,36 @@ const PEAKS = [
   ['lysica', 'Łysica', [], 614, 'gory-swietokrzyskie', [50.892, 20.895]],
 ]
 
-// Prostokąt: od Karkonoszy po Bieszczady i od Tatr po Góry Świętokrzyskie.
-const BBOX = '48.95,14.8,51.1,23.0'
-const allNames = PEAKS.flatMap(([, name, aliases]) => [name, ...aliases])
-const regex = '^(' + allNames.map((n) => n.replace(/[()]/g, '\\\\$&')).join('|') + ')$'
-const query = `[out:json][timeout:60];node["natural"="peak"]["name"~"${regex}"](${BBOX});out body;`
+// Szukamy szczytów w promieniu 4 km od każdego przybliżonego położenia (jedno zbiorcze zapytanie).
+// Nazwy w OSM bywają dwujęzyczne, np. "Sněžka / Śnieżka", dlatego porównujemy fragmenty nazw.
+const RADIUS_M = 4000
+const query =
+  '[out:json][timeout:90];(' +
+  PEAKS.map(([, , , , , [lat, lon]]) => `node["natural"="peak"](around:${RADIUS_M},${lat},${lon});`).join('') +
+  ');out body;'
 
 const nodes = (await runQuery(query)).filter((n) => n.tags)
-const MAX_DISTANCE_M = 8000
+const norm = (x) => x.toLocaleLowerCase('pl')
 
 const peaks = []
 const problems = []
 for (const [id, name, aliases, elevation, range, [lat, lon]] of PEAKS) {
-  const wanted = [name, ...aliases]
+  const wanted = [name, ...aliases].map(norm)
   const dist = (n) => distanceM(lat, lon, n.lat, n.lon)
+  const eleDiff = (n) => {
+    const d = Math.abs(parseFloat(n.tags.ele) - elevation)
+    return Number.isNaN(d) ? 999 : d
+  }
+  // Kandydaci: blisko nas i z pasującą nazwą. Najlepszy ma wysokość najbliższą naszej.
   const best = nodes
-    .filter((n) => namesOf(n).some((x) => wanted.includes(x)))
-    .sort((a, b) => dist(a) - dist(b))[0]
+    .filter((n) => dist(n) <= RADIUS_M && namesOf(n).some((x) => wanted.some((w) => norm(x).includes(w))))
+    .sort((a, b) => eleDiff(a) - eleDiff(b) || dist(a) - dist(b))[0]
 
   const point = { id, name, type: 'peak', elevation, lat, lon, range, osmId: 0 }
-  if (!best) problems.push(`${name}: brak w OSM, zostają współrzędne przybliżone`)
-  else if (dist(best) > MAX_DISTANCE_M)
-    problems.push(`${name}: OSM ma punkt ${Math.round(dist(best))} m dalej (${best.lat}, ${best.lon}, ele ${best.tags.ele ?? '?'}), zostają przybliżone`)
-  else {
-    Object.assign(point, { lat: Number(best.lat.toFixed(5)), lon: Number(best.lon.toFixed(5)), osmId: best.id })
-    const ele = parseFloat(best.tags.ele)
-    if (!(Math.abs(ele - elevation) <= 15)) problems.push(`${name}: OSM ma ${best.tags.ele ?? '?'} m, my ${elevation} m`)
-  }
+  if (!best) problems.push(`${name}: brak w OSM w promieniu ${RADIUS_M / 1000} km, zostają przybliżone`)
+  else if (eleDiff(best) > 30)
+    problems.push(`${name}: najlepszy kandydat "${best.tags.name}" ma ${best.tags.ele ?? '?'} m (my ${elevation} m), zostają przybliżone`)
+  else Object.assign(point, { lat: Number(best.lat.toFixed(5)), lon: Number(best.lon.toFixed(5)), osmId: best.id })
   peaks.push(point)
 }
 

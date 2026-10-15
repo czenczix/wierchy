@@ -2,11 +2,15 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { useState } from 'react'
 import PeakRow from '../components/PeakRow'
 import { points } from '../data/points'
-import { ranges } from '../data/ranges'
+import { groupOf, ranges } from '../data/ranges'
 import { db } from '../db'
 import type { Point } from '../types'
 
 type TypeFilter = 'all' | Point['type']
+
+// Ten ekran pokazuje Tatry. Szczyty z innych pasm są w zakładce Korona.
+const tatraPoints = points.filter((p) => groupOf(p.range) === 'Tatry')
+const tatraRanges = ranges.filter((r) => r.group === 'Tatry')
 
 const TYPE_FILTERS: { value: TypeFilter; label: string }[] = [
   { value: 'all', label: 'Wszystko' },
@@ -46,7 +50,7 @@ export default function ListPage() {
   // nawet jeśli na Rysy wszedłeś trzy razy.
   const doneIds = useLiveQuery(async () => new Set((await db.ascents.orderBy('peakId').uniqueKeys()) as string[]))
 
-  const visible = points
+  const visible = tatraPoints
     .filter((p) => type === 'all' || p.type === type)
     .filter((p) => range === 'all' || p.range === range)
     .sort((a, b) => b.elevation - a.elevation)
@@ -62,7 +66,7 @@ export default function ListPage() {
       <Chips label="Rodzaj" options={TYPE_FILTERS} value={type} onChange={setType} />
       <Chips
         label="Pasmo"
-        options={[{ value: 'all', label: 'Całe Tatry' }, ...ranges.map((r) => ({ value: r.id, label: r.name.replace('Tatry ', '') }))]}
+        options={[{ value: 'all', label: 'Całe Tatry' }, ...tatraRanges.map((r) => ({ value: r.id, label: r.name.replace('Tatry ', '') }))]}
         value={range}
         onChange={setRange}
       />
