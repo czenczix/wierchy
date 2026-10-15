@@ -15,6 +15,7 @@ export const ranges: Range[] = [
   { id: 'pieniny', name: 'Pieniny', group: 'Karpaty' },
   { id: 'beskid-niski', name: 'Beskid Niski', group: 'Karpaty' },
   { id: 'bieszczady', name: 'Bieszczady', group: 'Karpaty' },
+  { id: 'gory-sanocko-turczanskie', name: 'Góry Sanocko-Turczańskie', group: 'Karpaty' },
   // Sudety
   { id: 'karkonosze', name: 'Karkonosze', group: 'Sudety' },
   { id: 'gory-izerskie', name: 'Góry Izerskie', group: 'Sudety' },
@@ -23,6 +24,7 @@ export const ranges: Range[] = [
   { id: 'gory-kamienne', name: 'Góry Kamienne', group: 'Sudety' },
   { id: 'gory-walbrzyskie', name: 'Góry Wałbrzyskie', group: 'Sudety' },
   { id: 'gory-sowie', name: 'Góry Sowie', group: 'Sudety' },
+  { id: 'gory-jastrzebie', name: 'Góry Jastrzębie', group: 'Sudety' },
   { id: 'gory-stolowe', name: 'Góry Stołowe', group: 'Sudety' },
   { id: 'gory-orlickie', name: 'Góry Orlickie', group: 'Sudety' },
   { id: 'gory-bystrzyckie', name: 'Góry Bystrzyckie', group: 'Sudety' },

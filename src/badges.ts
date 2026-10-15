@@ -28,6 +28,7 @@ const TATRA_PEAKS = getCollection('tatry-szczyty').pointIds
 const PASSES = getCollection('tatry-przelecze').pointIds
 const KGP = getCollection('kgp').pointIds
 const KBP = getCollection('kbp').pointIds
+const DIADEM = getCollection('diadem').pointIds
 const kgpIn = (group: string) => KGP.filter((id) => groupOf(points.find((p) => p.id === id)!.range) === group)
 const KGP_SUDETY = kgpIn('Sudety')
 const KGP_KARPATY = kgpIn('Karpaty').concat(kgpIn('Tatry')) // Tatry też są częścią Karpat
@@ -54,6 +55,10 @@ export const BADGES: BadgeDef[] = [
   { id: 'kgp', icon: '👑', name: 'Korona Gór Polskich', description: 'Wszystkie 28 szczytów Korony', measure: atLeast(KGP) },
   { id: 'kgp-sudety', icon: '🏰', name: 'Sudecka Korona', description: 'Wszystkie szczyty Korony w Sudetach', measure: atLeast(KGP_SUDETY) },
   { id: 'kbp', icon: '🌲', name: 'Korona Beskidów Polskich', description: 'Wszystkie 9 szczytów Korony Beskidów', measure: atLeast(KBP) },
+  { id: 'diadem-20', icon: '💠', name: 'Pierwsze kamienie', description: '20 szczytów Diademu Polskich Gór', measure: atLeast(DIADEM, 20) },
+  { id: 'diadem-40', icon: '🔷', name: 'Pół Diademu', description: '40 szczytów Diademu Polskich Gór', measure: atLeast(DIADEM, 40) },
+  { id: 'diadem-60', icon: '🔶', name: 'Szlifowanie Diademu', description: '60 szczytów Diademu Polskich Gór', measure: atLeast(DIADEM, 60) },
+  { id: 'diadem', icon: '💎', name: 'Diadem Polskich Gór', description: 'Wszystkie 80 szczytów Diademu', measure: atLeast(DIADEM) },
   { id: 'kgp-karpaty', icon: '🌲', name: 'Karpacka Korona', description: 'Wszystkie szczyty Korony w Karpatach', measure: atLeast(KGP_KARPATY) },
   { id: 'pass-all', icon: '🎖️', name: 'Przełęcze Tatr', description: 'Wszystkie przełęcze z listy', measure: atLeast(PASSES) },
 ]

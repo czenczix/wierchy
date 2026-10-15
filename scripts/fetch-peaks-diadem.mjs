@@ -15,7 +15,7 @@ const PEAKS = [
   ['wielka-czantoria', 'Wielka Czantoria', ['Czantoria'], 995, 'beskid-slaski', [49.679, 18.806]],
   ['klimczok', 'Klimczok', ['Klimczok'], 1117, 'beskid-slaski', [49.733, 19.006]],
   ['lamana-skala', 'Łamana Skała', ['Łamana Skała', 'Madohora'], 929, 'beskid-maly', [49.774, 19.355]],
-  ['wielka-racza', 'Wielka Racza', ['Racza'], 1236, 'beskid-zywiecki', [49.417, 18.99]],
+  ['wielka-racza', 'Wielka Racza', ['Racza', 'Rača'], 1236, 'beskid-zywiecki', [49.417, 18.99]],
   ['pilsko', 'Pilsko (Góra Pięciu Kopców)', ['Pięciu Kopców', 'Pilsko'], 1534, 'beskid-zywiecki', [49.544, 19.325]],
   ['jalowiec', 'Jałowiec', ['Jałowiec'], 1111, 'beskid-zywiecki', [49.665, 19.49]],
   ['polica', 'Polica', ['Polica'], 1369, 'beskid-zywiecki', [49.623, 19.626]],
@@ -40,7 +40,7 @@ const PEAKS = [
   ['slonny', 'Słonny', ['Słonny', 'Słonne'], 668, 'gory-sanocko-turczanskie', [49.58, 22.33]],
   ['slonny-wierch', 'Słonny Wierch (wsch.)', ['Słonny', 'Słonne'], 668, 'gory-sanocko-turczanskie', [49.57, 22.4]],
   ['jaworniki', 'Jaworniki', ['Jaworniki'], 908, 'gory-sanocko-turczanskie', [49.55, 22.45]],
-  ['trohaniec', 'Trohaniec', ['Trohaniec'], 939, 'bieszczady', [49.3, 22.27]],
+  ['trohaniec', 'Trohaniec', ['Trohaniec'], 939, 'gory-sanocko-turczanskie', [49.233, 22.658]],
   ['lopiennik', 'Łopiennik', ['Łopiennik'], 1069, 'bieszczady', [49.23, 22.39]],
   ['wolosan', 'Wołosań', ['Wołosań'], 1071, 'bieszczady', [49.2, 22.3]],
   ['wielka-rawka', 'Wielka Rawka', ['Wielka Rawka', 'Rawka'], 1307, 'bieszczady', [49.093, 22.585]],
@@ -55,7 +55,7 @@ const PEAKS = [
   ['borowa', 'Borowa', ['Borowa'], 853, 'gory-walbrzyskie', [50.73, 16.3]],
   ['lesista-wielka', 'Lesista Wielka', ['Lesista'], 851, 'gory-kamienne', [50.68, 16.19]],
   ['szeroka', 'Szeroka', ['Szeroka'], 842, 'gory-kamienne', [50.65, 16.33]],
-  ['janski-wierch', 'Jański Wierch', ['Jański'], 697, 'gory-jastrzebie', [50.58, 16.33]],
+  ['janski-wierch', 'Jański Wierch', ['Jański', 'Janski', 'Jańsk'], 697, 'gory-jastrzebie', [50.58, 16.33]],
   ['rog', 'Róg', ['Róg'], 715, 'gory-stolowe', [50.43, 16.48]],
   ['jagodna-polnocna', 'Jagodna Północna', ['Jagodna'], 985, 'gory-bystrzyckie', [50.27, 16.56]],
   ['wlodarz', 'Włodarz', ['Włodarz'], 811, 'gory-sowie', [50.68, 16.4]],
@@ -66,7 +66,10 @@ const PEAKS = [
 
 const BBOX = '48.95,14.8,51.15,23.0'
 const fragments = [...new Set(PEAKS.flatMap(([, , frags]) => frags))]
-const query = `[out:json][timeout:120];node["natural"="peak"]["name"~"${fragments.join('|')}",i](${BBOX});out body;`
+// Drugi warunek łapie szczyty oznaczone w OSM inaczej niż natural=peak (np. tylko z nazwą i wysokością).
+const query =
+  `[out:json][timeout:120];(node["natural"="peak"]["name"~"${fragments.join('|')}",i](${BBOX});` +
+  `node["name"~"Jańsk|Jansk",i]["ele"](${BBOX}););out body;`
 
 const nodes = (await runQuery(query)).filter((n) => n.tags)
 const norm = (x) => x.toLocaleLowerCase('pl')

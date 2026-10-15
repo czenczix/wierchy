@@ -33,6 +33,27 @@ export const collections: Collection[] = [
     pointIds: ['babia-gora', 'tarnica', 'turbacz', 'radziejowa', 'skrzyczne', 'mogielica', 'lackowa', 'czupel', 'lubomir'],
   },
   {
+    id: 'diadem',
+    name: 'Diadem Polskich Gór',
+    icon: '💎',
+    description: 'Najwyższe szczyty 80 mezoregionów górskich Polski',
+    crown: true,
+    source: 'Komisja Turystyki Górskiej PTTK Wrocław',
+    // Kolejność jak w regulaminie, od Beskidu Śląskiego po Góry Świętokrzyskie.
+    pointIds: [
+      'wielka-czantoria', 'klimczok', 'skrzyczne', 'czupel', 'lamana-skala', 'wielka-racza', 'pilsko', 'jalowiec',
+      'babia-gora', 'polica', 'bukowinski-wierch', 'lasek', 'babica', 'koskowa-gora', 'lubomir', 'lubon-wielki',
+      'cwilin', 'mogielica', 'modyn', 'jaworz', 'turbacz', 'luban', 'radziejowa', 'jaworzyna-krynicka', 'kraczonik',
+      'jaworze', 'lackowa', 'watkowa', 'baranie', 'kamien-jasliska', 'tokarnia', 'zar-branisko', 'trzy-korony',
+      'wysoka', 'starorobocianski-wierch', 'krzesanica', 'swinica', 'rysy', 'slonny', 'slonny-wierch', 'jaworniki',
+      'trohaniec', 'lopiennik', 'wolosan', 'wielka-rawka', 'tarnica', 'wysoka-kopa', 'sniezka', 'skalny-stol',
+      'lysocina', 'okole', 'maslak', 'baraniec', 'skopiec', 'poreba', 'krzyzna-gora', 'skalnik', 'trojgarb',
+      'chelmiec', 'borowa', 'waligora', 'lesista-wielka', 'szeroka', 'janski-wierch', 'rog', 'szczeliniec-wielki',
+      'orlica', 'jagodna-polnocna', 'jagodna', 'wlodarz', 'wielka-sowa', 'szeroka-gora', 'klodzka-gora', 'kowadlo',
+      'postawna', 'suchon', 'snieznik', 'biskupia-kopa', 'sleza', 'lysica',
+    ],
+  },
+  {
     id: 'tatry-szczyty',
     name: 'Szczyty Tatr',
     icon: '⛰️',
