@@ -68,7 +68,12 @@ a { color: var(--accent); }
 .peak-ele { white-space: nowrap; color: var(--muted); font-variant-numeric: tabular-nums; }
 .back { display: inline-block; margin-bottom: 12px; text-decoration: none; }
 
-/* Filtry nad listą */
+/* Wyszukiwarka i filtry nad listą */
+.search, .range-select {
+  width: 100%; margin-top: 8px; padding: 10px 14px; font: inherit; font-size: 1rem;
+  border: 1px solid var(--border); border-radius: 12px; background: var(--card); color: var(--text);
+}
+.range-select { margin-top: 8px; font-size: 0.9rem; padding: 8px 12px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .chips + .chips { margin-top: 8px; }
 .chip {

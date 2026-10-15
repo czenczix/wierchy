@@ -22,11 +22,11 @@ export default function MapPage() {
   // Adres /mapa?szczyt=rysy otwiera mapę przybliżoną na konkretny szczyt.
   const [params] = useSearchParams()
   const focus = getPoint(params.get('szczyt') ?? '')
-  // /mapa?kolekcja=kgp pokazuje całą Koronę; bez parametru startujemy od Tatr.
+  // /mapa?kolekcja=kgp pokazuje całą Koronę; bez parametru widać wszystkie punkty w Polsce.
   const collectionId = params.get('kolekcja')
   const startPoints = collectionId
     ? points.filter((p) => getCollection(collectionId).pointIds.includes(p.id))
-    : points.filter((p) => p.range.startsWith('tatry-'))
+    : points
 
   return (
     <div className="map-wrap">

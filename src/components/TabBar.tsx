@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 // NavLink to link, który sam wie, czy jego ekran jest aktywny,
 // i dodaje wtedy klasę "active" (podświetlenie zakładki).
 const tabs = [
-  { to: '/', label: 'Tatry', icon: '⛰️' },
+  { to: '/', label: 'Góry', icon: '⛰️' },
   { to: '/korona', label: 'Korona', icon: '👑' },
   { to: '/mapa', label: 'Mapa', icon: '🗺️' },
   { to: '/postep', label: 'Postęp', icon: '🏅' },
