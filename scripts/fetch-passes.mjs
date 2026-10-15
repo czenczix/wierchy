@@ -46,7 +46,8 @@ for (const [id, name, aliases, elevation, range, [lat, lon]] of PASSES) {
 
   const point = { id, name, type: 'pass', elevation, lat, lon, range, osmId: 0 }
   if (!best) problems.push(`${name}: brak w OSM, zostają współrzędne przybliżone`)
-  else if (dist(best) > MAX_DISTANCE_M) problems.push(`${name}: OSM ${Math.round(dist(best))} m dalej, zostają przybliżone`)
+  else if (dist(best) > MAX_DISTANCE_M)
+    problems.push(`${name}: OSM ma punkt ${Math.round(dist(best))} m dalej (${best.lat}, ${best.lon}, ele ${best.tags.ele ?? "?"}), zostają przybliżone`)
   else Object.assign(point, { lat: Number(best.lat.toFixed(5)), lon: Number(best.lon.toFixed(5)), osmId: best.id })
   passes.push(point)
 }
