@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router-dom'
+import OfflineBanner from './components/OfflineBanner'
 import TabBar from './components/TabBar'
 import ListPage from './pages/ListPage'
 import MapPage from './pages/MapPage'
@@ -10,6 +11,7 @@ import ProgressPage from './pages/ProgressPage'
 export default function App() {
   return (
     <div className="app">
+      <OfflineBanner />
       <main className="screen">
         <Routes>
           <Route path="/" element={<ListPage />} />
