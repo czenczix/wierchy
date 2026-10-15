@@ -112,3 +112,26 @@ h2 { font-size: 1.1rem; margin: 24px 0 0; }
   margin-left: 8px; padding: 2px 8px; border-radius: 999px; font-size: 0.75rem; font-weight: 600;
   background: var(--accent); color: var(--bg); vertical-align: middle;
 }
+
+/* Postęp */
+.progress-hero { text-align: center; margin: 8px 0 24px; }
+.progress-big { font-size: 3rem; font-weight: 700; color: var(--accent); line-height: 1.1; }
+.progress-hero .progress { margin-top: 12px; }
+.progress { margin-bottom: 14px; }
+.progress-label { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 4px; }
+.progress-track { height: 10px; border-radius: 999px; background: var(--border); overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 999px; background: var(--accent); transition: width 0.4s; }
+
+/* Odznaki */
+.badges { list-style: none; padding: 0; margin: 12px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.badge {
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px;
+  padding: 14px 10px; border-radius: 12px; border: 1px dashed var(--border); color: var(--muted);
+}
+.badge .badge-icon { font-size: 2rem; filter: grayscale(1); opacity: 0.4; }
+.badge strong { font-size: 0.95rem; }
+.badge-desc { font-size: 0.78rem; }
+.badge-date { font-size: 0.78rem; margin-top: 4px; font-weight: 600; }
+.badge.earned { border: 1px solid var(--accent); background: var(--card); color: var(--text); }
+.badge.earned .badge-icon { filter: none; opacity: 1; }
+.badge.earned .badge-date { color: var(--accent); }
