@@ -24,8 +24,8 @@ const PASSES = [
   ['siwa-przelecz', 'Siwa Przełęcz', ['Przełęcz Siwa'], 1812, 'tatry-zachodnie', [49.2132, 19.8361]],
   ['przelecz-kondracka', 'Przełęcz Kondracka', ['Kondracka Przełęcz'], 1725, 'tatry-zachodnie', [49.2405, 19.9440]],
   ['przelecz-miedzy-kopami', 'Przełęcz między Kopami', [], 1499, 'tatry-wysokie', [49.2561, 20.0049]],
-  ['przelecz-iwaniacka', 'Przełęcz Iwaniacka', ['Iwaniacka Przełęcz'], 1459, 'tatry-zachodnie', [49.2295, 19.8641]],
-  ['przelecz-w-grzybowcu', 'Przełęcz w Grzybowcu', [], 1311, 'tatry-zachodnie', [49.2601, 19.9478]],
+  ['przelecz-iwaniacka', 'Przełęcz Iwaniacka', ['Iwaniacka Przełęcz'], 1459, 'tatry-zachodnie', [49.2322, 19.8363]],
+  ['przelecz-w-grzybowcu', 'Przełęcz w Grzybowcu', [], 1311, 'tatry-zachodnie', [49.2594, 19.9159]],
 ]
 
 const BBOX = '49.15,19.70,49.31,20.20'
