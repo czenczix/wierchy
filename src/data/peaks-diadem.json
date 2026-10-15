@@ -34,10 +34,10 @@
     "name": "Wielka Racza",
     "type": "peak",
     "elevation": 1236,
-    "lat": 49.4227,
-    "lon": 18.9925,
+    "lat": 49.41334,
+    "lon": 18.9688,
     "range": "beskid-zywiecki",
-    "osmId": 0
+    "osmId": 926465691
   },
   {
     "id": "pilsko",
@@ -74,8 +74,8 @@
     "name": "Bukowiński Wierch",
     "type": "peak",
     "elevation": 940,
-    "lat": 49.5245,
-    "lon": 19.83279,
+    "lat": 49.52371,
+    "lon": 19.83429,
     "range": "beskid-zywiecki",
     "osmId": 5016396969
   },
@@ -434,10 +434,10 @@
     "name": "Jański Wierch",
     "type": "peak",
     "elevation": 697,
-    "lat": 50.58,
-    "lon": 16.33,
+    "lat": 50.61128,
+    "lon": 15.98889,
     "range": "gory-jastrzebie",
-    "osmId": 0
+    "osmId": 4279742374
   },
   {
     "id": "rog",
