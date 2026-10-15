@@ -124,19 +124,19 @@
     "name": "Przełęcz Iwaniacka",
     "type": "pass",
     "elevation": 1459,
-    "lat": 49.2295,
-    "lon": 19.8641,
+    "lat": 49.23217,
+    "lon": 19.8363,
     "range": "tatry-zachodnie",
-    "osmId": 0
+    "osmId": 1125062544
   },
   {
     "id": "przelecz-w-grzybowcu",
     "name": "Przełęcz w Grzybowcu",
     "type": "pass",
     "elevation": 1311,
-    "lat": 49.2601,
-    "lon": 19.9478,
+    "lat": 49.2594,
+    "lon": 19.91595,
     "range": "tatry-zachodnie",
-    "osmId": 0
+    "osmId": 3600497907
   }
 ]
