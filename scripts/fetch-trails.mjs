@@ -36,6 +36,16 @@ const inArea = ([lat, lon]) =>
 const area = TATRY
   ? [`relation["route"="hiking"](${BBOX.join(',')});`]
   : points.map((p) => `relation["route"="hiking"](around:${RADIUS_M},${p.lat},${p.lon});`)
+// Prostokąt obejmujący cały obszar: w nim szukamy schronisk, parkingów itd.
+const pad = RADIUS_M / 111_000
+const box = TATRY
+  ? BBOX
+  : [
+      Math.min(...points.map((p) => p.lat)) - pad,
+      Math.min(...points.map((p) => p.lon)) - pad * 1.5,
+      Math.max(...points.map((p) => p.lat)) + pad,
+      Math.max(...points.map((p) => p.lon)) + pad * 1.5,
+    ].map((x) => x.toFixed(3))
 
 // Oprócz szlaków bierzemy to, co leży przy nich: schroniska, a poza Tatrami także parkingi,
 // stacje kolejowe i miejscowości, z których zrobimy punkty startowe.
@@ -50,11 +60,11 @@ way(r.r)->.w;
 node(w.w);
 out skel qt;
 (
-  nwr["tourism"="alpine_hut"](around.w:400);
-  nwr["tourism"]["name"~"${HUT_NAME}"](around.w:400);
-${TATRY ? '' : `  nwr["amenity"="parking"](around.w:150);
-  node["railway"~"^(station|halt)$"](around.w:300);
-  node["place"~"^(city|town|village|hamlet)$"](around.w:600);`}
+  nwr["tourism"="alpine_hut"](${box});
+  nwr["tourism"]["name"~"${HUT_NAME}"](${box});
+${TATRY ? '' : `  nwr["amenity"="parking"](${box});
+  node["railway"~"^(station|halt)$"](${box});
+  node["place"~"^(city|town|village|hamlet)$"](${box});`}
 );
 out center tags;`
 
@@ -213,13 +223,27 @@ const TRAILHEADS = [
   ['brzeziny', 'Brzeziny', 49.2946, 20.0442],
   ['zazadnia', 'Zazadnia', 49.2889, 20.0811],
 ]
+// Siatka kratek ok. 1 km: żeby znaleźć najbliższy punkt szlaku, sprawdzamy tylko kratki
+// dookoła, a nie wszystkie punkty (parkingów są tysiące, punktów szlaku dziesiątki tysięcy).
+const CELL = 0.01
+const cellKey = (a, b) => `${a},${b}`
+const grid = new Map()
+nodes.forEach((p, i) => {
+  const k = cellKey(Math.floor(p[0] / CELL), Math.floor(p[1] / CELL))
+  if (!grid.has(k)) grid.set(k, [])
+  grid.get(k).push(i)
+})
+/** Najbliższy punkt szlaku w promieniu ok. 1,4 km: [numer, odległość] albo [-1, Infinity]. */
 const nearestNode = (lat, lon) => {
   let best = -1
   let bestD = Infinity
-  nodes.forEach((p, i) => {
-    const d = distanceM(lat, lon, p[0], p[1])
-    if (d < bestD) [best, bestD] = [i, d]
-  })
+  const [ci, cj] = [Math.floor(lat / CELL), Math.floor(lon / CELL)]
+  for (let di = -1; di <= 1; di++)
+    for (let dj = -2; dj <= 2; dj++)
+      for (const i of grid.get(cellKey(ci + di, cj + dj)) ?? []) {
+        const d = distanceM(lat, lon, nodes[i][0], nodes[i][1])
+        if (d < bestD) [best, bestD] = [i, d]
+      }
   return [best, bestD]
 }
 const starts = []
