@@ -1,0 +1,22 @@
+{
+  "tatry": {
+    "name": "Tatry",
+    "ranges": ["tatry-wysokie", "tatry-zachodnie"]
+  },
+  "beskidy-zachodnie": {
+    "name": "Beskidy Zachodnie, Gorce i Pieniny",
+    "ranges": ["beskid-zywiecki", "beskid-slaski", "beskid-maly", "beskid-makowski", "beskid-wyspowy", "gorce", "beskid-sadecki", "pieniny"]
+  },
+  "beskidy-wschodnie": {
+    "name": "Beskid Niski i Bieszczady",
+    "ranges": ["beskid-niski", "bieszczady", "gory-sanocko-turczanskie"]
+  },
+  "sudety": {
+    "name": "Sudety",
+    "ranges": ["karkonosze", "gory-izerskie", "rudawy-janowickie", "gory-kaczawskie", "gory-kamienne", "gory-walbrzyskie", "gory-sowie", "gory-jastrzebie", "gory-stolowe", "gory-orlickie", "gory-bystrzyckie", "gory-bardzkie", "masyw-snieznika", "gory-bialskie", "gory-zlote", "gory-opawskie", "masyw-slezy"]
+  },
+  "swietokrzyskie": {
+    "name": "Góry Świętokrzyskie",
+    "ranges": ["gory-swietokrzyskie"]
+  }
+}

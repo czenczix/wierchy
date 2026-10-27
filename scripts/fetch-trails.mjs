@@ -1,8 +1,8 @@
-// Pobiera sieć szlaków turystycznych Tatr z OpenStreetMap, dokłada wysokości punktów
-// i zapisuje gotowy "graf" do src/data/trails.json. Z tego pliku apka sama (offline)
-// wyznacza trasy, np. z Morskiego Oka na Rysy.
+// Pobiera sieć szlaków turystycznych jednego regionu z OpenStreetMap, dokłada wysokości punktów
+// i zapisuje gotowy "graf" do src/data/trails/<region>.json. Z tego pliku apka sama (offline)
+// wyznacza trasy, np. z Morskiego Oka na Rysy albo z Krowiarek na Babią Górę.
 //
-// Uruchomienie: node scripts/fetch-trails.mjs
+// Uruchomienie: node scripts/fetch-trails.mjs <region>   (regiony: src/data/trail-regions.json)
 //
 // Jak to działa:
 // 1. Z OSM bierzemy relacje route=hiking (to są szlaki, np. "czerwony: Palenica – Rysy")
@@ -12,22 +12,50 @@
 // 4. Dla każdego punktu pobieramy wysokość z Open-Meteo (model terenu Copernicus 90 m),
 //    żeby apka mogła liczyć podejścia, zejścia i czas przejścia.
 
-import { mkdirSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { distanceM, runQuery } from './overpass.mjs'
 
-// Polskie Tatry z małym zapasem na szlaki graniczne.
-const BBOX = [49.16, 19.72, 49.31, 20.16]
-const bbox = BBOX.join(',')
-const inBox = ([lat, lon]) => lat >= BBOX[0] && lat <= BBOX[2] && lon >= BBOX[1] && lon <= BBOX[3]
+const REGION = process.argv[2] ?? 'tatry'
+const regions = JSON.parse(readFileSync('src/data/trail-regions.json', 'utf8'))
+if (!regions[REGION]) throw new Error(`Nie znam regionu ${REGION}`)
+const TATRY = REGION === 'tatry'
+const points = ['peaks', 'passes', 'peaks-pl', 'peaks-diadem']
+  .flatMap((f) => JSON.parse(readFileSync(`src/data/${f}.json`, 'utf8')))
+  .filter((p) => regions[REGION].ranges.includes(p.range))
+console.log(`Region ${REGION}: ${points.length} punktów z apki`)
 
-const query = `[out:json][timeout:180];
-relation["route"="hiking"](${bbox})->.r;
+// Obszar: Tatry to jeden prostokąt (polskie Tatry z zapasem na szlaki graniczne).
+// Gdzie indziej góry są rozrzucone, więc bierzemy koła o promieniu 15 km wokół każdego
+// szczytu z apki: wystarczy, żeby dojść z doliny, a plik nie puchnie od szlaków w miastach.
+const BBOX = [49.16, 19.72, 49.31, 20.16]
+const RADIUS_M = 15_000
+const inArea = ([lat, lon]) =>
+  TATRY
+    ? lat >= BBOX[0] && lat <= BBOX[2] && lon >= BBOX[1] && lon <= BBOX[3]
+    : points.some((p) => distanceM(lat, lon, p.lat, p.lon) <= RADIUS_M)
+const area = TATRY
+  ? [`relation["route"="hiking"](${BBOX.join(',')});`]
+  : points.map((p) => `relation["route"="hiking"](around:${RADIUS_M},${p.lat},${p.lon});`)
+
+// Oprócz szlaków bierzemy to, co leży przy nich: schroniska, a poza Tatrami także parkingi,
+// stacje kolejowe i miejscowości, z których zrobimy punkty startowe.
+const HUT_NAME = '^(Schronisko|Bacówka|Studencka Baza|Chatka|Chata (pod|na|w) )'
+const query = `[out:json][timeout:300];
+(
+${area.join('\n')}
+)->.r;
 .r out body;
 way(r.r)->.w;
 .w out body;
 node(w.w);
 out skel qt;
-nwr["tourism"="alpine_hut"](${bbox});
+(
+  nwr["tourism"="alpine_hut"](around.w:400);
+  nwr["tourism"]["name"~"${HUT_NAME}"](around.w:400);
+${TATRY ? '' : `  nwr["amenity"="parking"](around.w:150);
+  node["railway"~"^(station|halt)$"](around.w:300);
+  node["place"~"^(city|town|village|hamlet)$"](around.w:600);`}
+);
 out center tags;`
 
 const elements = await runQuery(query)
@@ -35,11 +63,14 @@ const rels = elements.filter((e) => e.type === 'relation')
 const ways = new Map(elements.filter((e) => e.type === 'way' && e.nodes).map((w) => [w.id, w]))
 const coords = new Map(elements.filter((e) => e.type === 'node').map((n) => [n.id, [n.lat, n.lon]]))
 // Schroniska bywają w OSM punktem albo obrysem budynku; dla obrysu Overpass podaje środek (center).
-const huts = elements
-  .filter((e) => e.tags?.tourism === 'alpine_hut' && e.tags?.name)
-  .map((e) => ({ id: e.id, name: e.tags.name, lat: e.lat ?? e.center?.lat, lon: e.lon ?? e.center?.lon }))
-  .filter((h) => h.lat !== undefined)
-console.log(`OSM: ${rels.length} relacji, ${ways.size} dróg, ${coords.size} punktów, ${huts.length} schronisk`)
+const pois = elements
+  .filter((e) => e.tags && e.type !== 'relation' && !(e.type === 'way' && e.nodes))
+  .map((e) => ({ ...e, lat: e.lat ?? e.center?.lat, lon: e.lon ?? e.center?.lon }))
+  .filter((e) => e.lat !== undefined && inArea([e.lat, e.lon]))
+const huts = pois.filter(
+  (e) => e.tags.name && (e.tags.tourism === 'alpine_hut' || (e.tags.tourism && new RegExp(HUT_NAME).test(e.tags.name))),
+)
+console.log(`OSM: ${rels.length} relacji, ${ways.size} dróg, ${coords.size} punktów, ${huts.length} schronisk, ${pois.length} miejsc`)
 
 // --- Kolory szlaków ---
 const COLORS = ['red', 'blue', 'green', 'yellow', 'black']
@@ -60,9 +91,9 @@ for (const r of rels) {
   }
 }
 
-// Bierzemy tylko kolorowe drogi, które choć jednym punktem są w Tatrach.
+// Bierzemy tylko kolorowe drogi, które choć jednym punktem są w obszarze.
 const trailWays = [...ways.values()].filter(
-  (w) => wayColors.has(w.id) && w.nodes.some((id) => coords.has(id) && inBox(coords.get(id))),
+  (w) => wayColors.has(w.id) && w.nodes.some((id) => coords.has(id) && inArea(coords.get(id))),
 )
 
 // --- Skrzyżowania: punkty używane przez więcej niż jedną drogę albo końce dróg ---
@@ -71,7 +102,8 @@ for (const w of trailWays) for (const id of w.nodes) uses.set(id, (uses.get(id) 
 const isJunction = (w, i) => i === 0 || i === w.nodes.length - 1 || uses.get(w.nodes[i]) > 1
 
 // --- Uproszczenie kształtu (algorytm Douglasa-Peuckera) ---
-const TOLERANCE_M = 8
+// W Tatrach szlaki są krótsze i bardziej kręte, więc trzymamy więcej szczegółów.
+const TOLERANCE_M = TATRY ? 8 : 12
 function simplify(ids) {
   if (ids.length <= 2) return ids
   const [a, b] = [coords.get(ids[0]), coords.get(ids[ids.length - 1])]
@@ -144,6 +176,7 @@ async function elevationChunk(chunk) {
           if (list.length === chunk.length && list.every((e) => typeof e === 'number')) return list
         }
         console.log(`wysokości, serwis ${s + 1}: HTTP ${res.status}`)
+        if (res.status === 429) await new Promise((r) => setTimeout(r, 60_000)) // za dużo zapytań: czekamy minutę
       } catch (err) {
         console.log(`wysokości, serwis ${s + 1}: ${err.message}`)
       }
@@ -158,14 +191,18 @@ async function elevations(list) {
   const out = []
   for (let i = 0; i < list.length; i += 100) {
     out.push(...(await elevationChunk(list.slice(i, i + 100))))
-    await new Promise((r) => setTimeout(r, 200)) // nie zasypujemy serwera
+    await new Promise((r) => setTimeout(r, 250)) // nie zasypujemy serwera
+    if (i % 5000 === 0) console.log(`wysokości: ${i} / ${list.length}`)
   }
   return out.map((e) => Math.round(e))
 }
 const eles = await elevations(nodes)
 nodes.forEach((p, i) => p.push(eles[i]))
 
-// --- Punkty startowe: schroniska z OSM i najpopularniejsze wejścia na szlaki ---
+// --- Punkty startowe ---
+// W Tatrach to ręcznie wybrane, najpopularniejsze wejścia na szlaki. W innych górach
+// robimy je automatycznie: parking albo stacja przy szlaku, albo miejscowość, przez którą
+// szlak przechodzi. Do tego schroniska (z nich też można zacząć).
 const TRAILHEADS = [
   ['palenica', 'Palenica Białczańska (parking)', 49.2547, 20.1034],
   ['lysa-polana', 'Łysa Polana', 49.2654, 20.1152],
@@ -186,18 +223,52 @@ const nearestNode = (lat, lon) => {
   return [best, bestD]
 }
 const starts = []
-for (const [id, name, lat, lon] of TRAILHEADS) {
-  const [node, d] = nearestNode(lat, lon)
-  if (d <= 800) starts.push({ id, name, node, kind: 'start' })
-  else console.log(`Pomijam ${name}: najbliższy szlak ${Math.round(d)} m`)
+if (TATRY) {
+  for (const [id, name, lat, lon] of TRAILHEADS) {
+    const [node, d] = nearestNode(lat, lon)
+    if (d <= 800) starts.push({ id, name, node, kind: 'start' })
+    else console.log(`Pomijam ${name}: najbliższy szlak ${Math.round(d)} m`)
+  }
+} else {
+  const places = pois.filter((e) => e.tags.place && e.tags.name)
+  const placeNear = (lat, lon) => {
+    let best = null
+    let bestD = 3000
+    for (const p of places) {
+      const d = distanceM(lat, lon, p.lat, p.lon)
+      if (d < bestD) [best, bestD] = [p.tags.name, d]
+    }
+    return best
+  }
+  // Kandydaci od najlepszych: stacja, parking, miejscowość. Bliżej niż 800 m od już
+  // wybranego startu nie dokładamy kolejnego, żeby lista nie była za długa.
+  const candidates = []
+  for (const e of pois) {
+    const t = e.tags
+    let rank, name, max
+    if (t.railway) [rank, name, max] = [0, t.name && `${t.name} (stacja)`, 300]
+    else if (t.amenity === 'parking') {
+      const place = placeNear(e.lat, e.lon)
+      ;[rank, name, max] = [1, t.name ? t.name : place && `${place} (parking)`, 150]
+      if (t.access && !['yes', 'customers', 'permissive'].includes(t.access)) continue
+    } else if (t.place) [rank, name, max] = [2, t.name, 400]
+    else continue
+    if (!name) continue
+    const [node, d] = nearestNode(e.lat, e.lon)
+    if (d <= max) candidates.push({ id: `osm-${e.type[0]}${e.id}`, name, node, rank })
+  }
+  candidates.sort((a, b) => a.rank - b.rank)
+  for (const c of candidates) {
+    const [lat, lon] = nodes[c.node]
+    if (starts.some((s) => distanceM(lat, lon, nodes[s.node][0], nodes[s.node][1]) < 800)) continue
+    starts.push({ id: c.id, name: c.name, node: c.node, kind: 'start' })
+  }
 }
 for (const h of huts) {
   const [node, d] = nearestNode(h.lat, h.lon)
-  if (d <= 400 && inBox([h.lat, h.lon])) {
-    starts.push({ id: 'osm-' + h.id, name: h.name, node, kind: 'hut' })
-  }
+  if (d <= 400) starts.push({ id: 'osm-' + h.id, name: h.name, node, kind: 'hut' })
 }
-console.log(`Punkty startowe: ${starts.length}`)
+console.log(`Punkty startowe: ${starts.filter((s) => s.kind === 'start').length}, schroniska: ${starts.filter((s) => s.kind === 'hut').length}`)
 
 const data = {
   // [szerokość, długość, wysokość]
@@ -208,7 +279,7 @@ const data = {
   source: 'OpenStreetMap (ODbL), wysokości: Open-Meteo / Copernicus DEM',
   fetched: new Date().toISOString().slice(0, 10),
 }
-mkdirSync('src/data', { recursive: true })
+mkdirSync('src/data/trails', { recursive: true })
 const json = JSON.stringify(data)
-writeFileSync('src/data/trails.json', json + '\n')
-console.log(`Zapisano src/data/trails.json (${Math.round(json.length / 1024)} KB)`)
+writeFileSync(`src/data/trails/${REGION}.json`, json + '\n')
+console.log(`Zapisano src/data/trails/${REGION}.json (${Math.round(json.length / 1024)} KB)`)
