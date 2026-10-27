@@ -1,6 +1,9 @@
 import 'leaflet/dist/leaflet.css'
 import { CircleMarker, MapContainer, Popup, TileLayer } from 'react-leaflet'
+import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import TrailLines from '../components/TrailLines'
+import { loadGraph, type Graph } from '../routing'
 import { getCollection } from '../data/collections'
 import { TYPE_LABEL, getPoint, points } from '../data/points'
 
@@ -21,6 +24,11 @@ const fillOf = (p: (typeof points)[number]) => (KGP.has(p.id) ? '#c99a06' : p.ty
 export default function MapPage() {
   // Adres /mapa?szczyt=rysy otwiera mapę przybliżoną na konkretny szczyt.
   const [params] = useSearchParams()
+  // Szlaki Tatr dociągamy w tle; mapa działa też, zanim się załadują.
+  const [graph, setGraph] = useState<Graph | null>(null)
+  useEffect(() => {
+    loadGraph().then(setGraph)
+  }, [])
   const focus = getPoint(params.get('szczyt') ?? '')
   // /mapa?kolekcja=kgp pokazuje całą Koronę; bez parametru widać wszystkie punkty w Polsce.
   const collectionId = params.get('kolekcja')
@@ -36,6 +44,7 @@ export default function MapPage() {
         className="map"
       >
         <TileLayer url={TILES} attribution={ATTRIBUTION} maxZoom={17} />
+        {graph && <TrailLines graph={graph} />}
         {points.map((peak) => (
           // CircleMarker to kółko rysowane przez przeglądarkę, więc nie potrzebuje plików z ikonami.
           <CircleMarker
@@ -50,6 +59,12 @@ export default function MapPage() {
               {peak.elevation} m n.p.m.
               <br />
               <Link to={`/szczyt/${peak.id}`}>Karta: {TYPE_LABEL[peak.type].toLowerCase()} →</Link>
+              {peak.range.startsWith('tatry-') && (
+                <>
+                  <br />
+                  <Link to={`/trasa?do=${peak.id}`}>🥾 Wyznacz trasę →</Link>
+                </>
+              )}
             </Popup>
           </CircleMarker>
         ))}
