@@ -27,14 +27,18 @@ way(r.r)->.w;
 .w out body;
 node(w.w);
 out skel qt;
-(node["tourism"~"alpine_hut|wilderness_hut"](${bbox}););
-out body;`
+nwr["tourism"="alpine_hut"](${bbox});
+out center tags;`
 
 const elements = await runQuery(query)
 const rels = elements.filter((e) => e.type === 'relation')
-const ways = new Map(elements.filter((e) => e.type === 'way').map((w) => [w.id, w]))
+const ways = new Map(elements.filter((e) => e.type === 'way' && e.nodes).map((w) => [w.id, w]))
 const coords = new Map(elements.filter((e) => e.type === 'node').map((n) => [n.id, [n.lat, n.lon]]))
-const huts = elements.filter((e) => e.type === 'node' && e.tags?.tourism && e.tags?.name)
+// Schroniska bywają w OSM punktem albo obrysem budynku; dla obrysu Overpass podaje środek (center).
+const huts = elements
+  .filter((e) => e.tags?.tourism === 'alpine_hut' && e.tags?.name)
+  .map((e) => ({ id: e.id, name: e.tags.name, lat: e.lat ?? e.center?.lat, lon: e.lon ?? e.center?.lon }))
+  .filter((h) => h.lat !== undefined)
 console.log(`OSM: ${rels.length} relacji, ${ways.size} dróg, ${coords.size} punktów, ${huts.length} schronisk`)
 
 // --- Kolory szlaków ---
@@ -120,26 +124,41 @@ for (const e of edges) {
 }
 console.log(`Graf: ${nodes.length} punktów, ${edges.length} odcinków`)
 
-// --- Wysokości z Open-Meteo (do 100 punktów na zapytanie) ---
+// --- Wysokości (do 100 punktów na zapytanie) ---
+// Najpierw Open-Meteo, a gdy nie odpowiada, OpenTopoData. Oba korzystają z modeli terenu ok. 30–90 m.
+const SERVICES = [
+  (chunk) =>
+    'https://api.open-meteo.com/v1/elevation?latitude=' + chunk.map((p) => p[0]).join(',') +
+    '&longitude=' + chunk.map((p) => p[1]).join(','),
+  (chunk) => 'https://api.opentopodata.org/v1/eudem25m?locations=' + chunk.map((p) => `${p[0]},${p[1]}`).join('|'),
+]
+const parse = [(j) => j.elevation, (j) => j.results.map((r) => r.elevation)]
+
+async function elevationChunk(chunk) {
+  for (let attempt = 1; attempt <= 4; attempt++) {
+    for (let s = 0; s < SERVICES.length; s++) {
+      try {
+        const res = await fetch(SERVICES[s](chunk), { signal: AbortSignal.timeout(30_000) })
+        if (res.ok) {
+          const list = parse[s](await res.json())
+          if (list.length === chunk.length && list.every((e) => typeof e === 'number')) return list
+        }
+        console.log(`wysokości, serwis ${s + 1}: HTTP ${res.status}`)
+      } catch (err) {
+        console.log(`wysokości, serwis ${s + 1}: ${err.message}`)
+      }
+      await new Promise((r) => setTimeout(r, 1100)) // OpenTopoData pozwala na 1 zapytanie na sekundę
+    }
+    await new Promise((r) => setTimeout(r, 5000 * attempt))
+  }
+  throw new Error('Nie udało się pobrać wysokości')
+}
+
 async function elevations(list) {
   const out = []
   for (let i = 0; i < list.length; i += 100) {
-    const chunk = list.slice(i, i + 100)
-    const url =
-      'https://api.open-meteo.com/v1/elevation?latitude=' +
-      chunk.map((p) => p[0]).join(',') +
-      '&longitude=' +
-      chunk.map((p) => p[1]).join(',')
-    for (let attempt = 1; ; attempt++) {
-      const res = await fetch(url)
-      if (res.ok) {
-        out.push(...(await res.json()).elevation)
-        break
-      }
-      if (attempt >= 5) throw new Error(`Open-Meteo: HTTP ${res.status}`)
-      await new Promise((r) => setTimeout(r, 2000 * attempt))
-    }
-    await new Promise((r) => setTimeout(r, 150)) // nie zasypujemy serwera
+    out.push(...(await elevationChunk(list.slice(i, i + 100))))
+    await new Promise((r) => setTimeout(r, 200)) // nie zasypujemy serwera
   }
   return out.map((e) => Math.round(e))
 }
@@ -175,8 +194,7 @@ for (const [id, name, lat, lon] of TRAILHEADS) {
 for (const h of huts) {
   const [node, d] = nearestNode(h.lat, h.lon)
   if (d <= 400 && inBox([h.lat, h.lon])) {
-    const id = 'osm-' + h.id
-    starts.push({ id, name: h.tags.name, node, kind: 'hut' })
+    starts.push({ id: 'osm-' + h.id, name: h.name, node, kind: 'hut' })
   }
 }
 console.log(`Punkty startowe: ${starts.length}`)
