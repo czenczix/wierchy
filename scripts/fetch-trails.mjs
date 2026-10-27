@@ -273,7 +273,9 @@ if (TATRY) {
     if (t.railway) [rank, name, max] = [0, t.name && `${t.name} (stacja)`, 300]
     else if (t.amenity === 'parking') {
       const place = placeNear(e.lat, e.lon)
-      ;[rank, name, max] = [1, t.name ? t.name : place && `${place} (parking)`, 150]
+      // Nazwy w stylu "Parking płatny" nic nie mówią, wtedy lepsza jest nazwa miejscowości.
+      const useful = t.name && !/parking|postoj|płatny|bezpłatny/i.test(t.name)
+      ;[rank, name, max] = [1, useful ? t.name : place && `${place} (parking)`, 150]
       if (t.access && !['yes', 'customers', 'permissive'].includes(t.access)) continue
     } else if (t.place) [rank, name, max] = [2, t.name, 400]
     else continue
@@ -284,13 +286,15 @@ if (TATRY) {
   candidates.sort((a, b) => a.rank - b.rank)
   for (const c of candidates) {
     const [lat, lon] = nodes[c.node]
-    if (starts.some((s) => distanceM(lat, lon, nodes[s.node][0], nodes[s.node][1]) < 800)) continue
+    // Za blisko innego startu albo ta sama nazwa kawałek dalej (np. trzy parkingi w jednej wsi).
+    const near = (s, m) => distanceM(lat, lon, nodes[s.node][0], nodes[s.node][1]) < m
+    if (starts.some((s) => near(s, 800) || (s.name === c.name && near(s, 4000)))) continue
     starts.push({ id: c.id, name: c.name, node: c.node, kind: 'start' })
   }
 }
 for (const h of huts) {
   const [node, d] = nearestNode(h.lat, h.lon)
-  if (d <= 400) starts.push({ id: 'osm-' + h.id, name: h.name, node, kind: 'hut' })
+  if (d <= 400) starts.push({ id: 'osm-' + h.id, name: h.tags.name, node, kind: 'hut' })
 }
 console.log(`Punkty startowe: ${starts.filter((s) => s.kind === 'start').length}, schroniska: ${starts.filter((s) => s.kind === 'hut').length}`)
 
