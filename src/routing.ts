@@ -35,11 +35,11 @@ export type Graph = { data: TrailData; arcs: Arc[][] }
 /**
  * Czas przejścia odcinka w godzinach. Wzór jak w normie DIN 33466: osobno liczymy czas
  * "po płaskim" i czas "w pionie", dłuższy bierzemy w całości, krótszy w połowie.
- * Prędkości (5 km/h, 325 m/h w górę, 700 m/h w dół) dopasowaliśmy do czasów
+ * Prędkości (6 km/h, 300 m/h w górę, 500 m/h w dół) dopasowaliśmy do czasów
  * z drogowskazów na 16 popularnych odcinkach w Tatrach (np. Palenica – Morskie Oko 2:20,
- * Czarny Staw – Rysy 3:20). Czyste DIN (4 km/h, 300 m/h, 500 m/h) dawało o ok. 20% za dużo.
+ * Czarny Staw – Rysy 3:20): średnio apka myli się o ok. 15%, czyste DIN (4 km/h) o 20%.
  */
-export const SPEED = { flat: 5000, up: 325, down: 700 }
+export const SPEED = { flat: 6000, up: 300, down: 500 }
 export function hikingHours(dist: number, up: number, down: number): number {
   const h = dist / SPEED.flat
   const v = up / SPEED.up + down / SPEED.down
