@@ -6,8 +6,9 @@ import AscentPhoto from '../components/AscentPhoto'
 import GpsCheckIn from '../components/GpsCheckIn'
 import { collectionsOf } from '../data/collections'
 import { TYPE_LABEL, getPoint } from '../data/points'
-import { getRange, groupOf } from '../data/ranges'
+import { getRange } from '../data/ranges'
 import { db } from '../db'
+import { canRoute } from '../routing'
 import type { Ascent } from '../types'
 
 const formatDate = (iso: string) =>
@@ -75,7 +76,7 @@ export default function PeakPage() {
       <div className="actions">
         <Link to={`/mapa?szczyt=${peak.id}`} className="secondary">Pokaż na mapie</Link>
         {/* Sieć szlaków mamy na razie tylko dla Tatr. */}
-        {groupOf(peak.range) === 'Tatry' && (
+        {canRoute(peak) && (
           <Link to={`/trasa?do=${peak.id}`} className="secondary">🥾 Wyznacz trasę</Link>
         )}
       </div>

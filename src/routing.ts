@@ -1,4 +1,6 @@
+import regions from './data/trail-regions.json'
 import { distanceM } from './geo'
+import type { Point } from './types'
 
 // Wyznaczanie trasy po szlakach. Wszystko liczy się w telefonie, bez internetu.
 //
@@ -25,18 +27,22 @@ export const TRAIL_COLORS: Record<string, { name: string; hex: string }> = {
 
 const ORDER = 'rbgyk'
 
-type Arc = { to: number; edge: number; dist: number; up: number; down: number; time: number }
+// time: czas przejścia w tę stronę, back: w przeciwną (pod górę idzie się dłużej niż w dół)
+type Arc = { to: number; edge: number; dist: number; up: number; down: number; time: number; back: number }
 
 export type Graph = { data: TrailData; arcs: Arc[][] }
 
 /**
- * Czas przejścia odcinka wg normy DIN 33466 (używanej też na szlakowskazach w Alpach):
- * 4 km/h po płaskim, 300 m/h w górę, 500 m/h w dół; dłuższa część liczy się w całości,
- * krótsza w połowie. Wynik w godzinach.
+ * Czas przejścia odcinka w godzinach. Wzór jak w normie DIN 33466: osobno liczymy czas
+ * "po płaskim" i czas "w pionie", dłuższy bierzemy w całości, krótszy w połowie.
+ * Prędkości (5 km/h, 325 m/h w górę, 700 m/h w dół) dopasowaliśmy do czasów
+ * z drogowskazów na 16 popularnych odcinkach w Tatrach (np. Palenica – Morskie Oko 2:20,
+ * Czarny Staw – Rysy 3:20). Czyste DIN (4 km/h, 300 m/h, 500 m/h) dawało o ok. 20% za dużo.
  */
+export const SPEED = { flat: 5000, up: 325, down: 700 }
 export function hikingHours(dist: number, up: number, down: number): number {
-  const h = dist / 4000
-  const v = up / 300 + down / 500
+  const h = dist / SPEED.flat
+  const v = up / SPEED.up + down / SPEED.down
   return Math.max(h, v) + Math.min(h, v) / 2
 }
 
@@ -51,8 +57,9 @@ export function buildGraph(data: TrailData): Graph {
       const climb = pb[2] - pa[2]
       const up = Math.max(0, climb)
       const down = Math.max(0, -climb)
-      arcs[a].push({ to: b, edge, dist, up, down, time: hikingHours(dist, up, down) })
-      arcs[b].push({ to: a, edge, dist, up: down, down: up, time: hikingHours(dist, down, up) })
+      const [there, back] = [hikingHours(dist, up, down), hikingHours(dist, down, up)]
+      arcs[a].push({ to: b, edge, dist, up, down, time: there, back })
+      arcs[b].push({ to: a, edge, dist, up: down, down: up, time: back, back: there })
     }
   })
   return { data, arcs }
@@ -67,6 +74,30 @@ export function nearestNode(g: Graph, lat: number, lon: number): { node: number;
     if (d < dist) [node, dist] = [i, d]
   })
   return { node, dist }
+}
+
+/**
+ * Czas dojścia z każdego punktu sieci do punktu to (Dijkstra "od końca": idziemy od celu
+ * wstecz, licząc czas odcinków w przeciwną stronę). Jedno przeliczenie wystarcza, żeby
+ * porównać wszystkie punkty startowe naraz.
+ */
+export function timesTo(g: Graph, to: number): Float64Array {
+  const best = new Float64Array(g.data.nodes.length).fill(Infinity)
+  best[to] = 0
+  const heap = new MinHeap()
+  heap.push(to, 0)
+  while (heap.size) {
+    const [u, t] = heap.pop()
+    if (t > best[u]) continue
+    for (const arc of g.arcs[u]) {
+      const nt = t + arc.back
+      if (nt < best[arc.to]) {
+        best[arc.to] = nt
+        heap.push(arc.to, nt)
+      }
+    }
+  }
+  return best
 }
 
 /** Fragment trasy idący jednym szlakiem (tym samym kolorem). */
@@ -180,15 +211,33 @@ class MinHeap {
   }
 }
 
-// Plik ze szlakami jest duży, więc ładujemy go dopiero, gdy jest potrzebny (osobny plik JS),
-// i tylko raz na całe działanie apki.
-let graphPromise: Promise<Graph> | null = null
-export function loadGraph(): Promise<Graph> {
-  graphPromise ??= import('./data/trails.json').then((m) => {
-    const data = m.default as unknown as TrailData
-    // Kolory zawsze w tej samej kolejności, żeby "bg" i "gb" znaczyły to samo.
-    for (const e of data.edges) e.c = [...e.c].sort((a, b) => ORDER.indexOf(a) - ORDER.indexOf(b)).join('')
-    return buildGraph(data)
-  })
-  return graphPromise
+// Szlaki są w osobnych plikach dla każdego regionu (Tatry, Beskidy, Sudety...).
+// Ładujemy plik dopiero, gdy jest potrzebny, i tylko raz na całe działanie apki.
+export type RegionId = keyof typeof regions
+export const REGIONS = regions as Record<RegionId, { name: string; ranges: string[] }>
+const files = import.meta.glob<{ default: unknown }>('./data/trails/*.json')
+
+/** Region szlaków, w którym leży punkt (np. Rysy -> tatry, Babia Góra -> beskidy-zachodnie). */
+export function regionOf(p: Point): RegionId | null {
+  const id = (Object.keys(REGIONS) as RegionId[]).find((r) => REGIONS[r].ranges.includes(p.range))
+  return id && files[`./data/trails/${id}.json`] ? id : null
+}
+
+/** Czy da się wyznaczyć trasę na ten punkt (mamy szlaki jego regionu). */
+export const canRoute = (p: Point) => regionOf(p) !== null
+
+const graphs = new Map<RegionId, Promise<Graph>>()
+export function loadGraph(region: RegionId): Promise<Graph> {
+  if (!graphs.has(region)) {
+    graphs.set(
+      region,
+      files[`./data/trails/${region}.json`]().then((m) => {
+        const data = m.default as TrailData
+        // Kolory zawsze w tej samej kolejności, żeby "bg" i "gb" znaczyły to samo.
+        for (const e of data.edges) e.c = [...e.c].sort((a, b) => ORDER.indexOf(a) - ORDER.indexOf(b)).join('')
+        return buildGraph(data)
+      }),
+    )
+  }
+  return graphs.get(region)!
 }

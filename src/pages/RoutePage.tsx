@@ -4,17 +4,32 @@ import { CircleMarker, MapContainer, Polyline, TileLayer, Tooltip, useMap } from
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import TrailLines from '../components/TrailLines'
 import { getPoint, points } from '../data/points'
-import { groupOf } from '../data/ranges'
 import { distanceM, formatDistance, getPosition } from '../geo'
-import { TRAIL_COLORS, findRoute, formatHours, loadGraph, nearestNode, type Graph, type Route } from '../routing'
+import {
+  REGIONS,
+  SPEED,
+  TRAIL_COLORS,
+  findRoute,
+  formatHours,
+  loadGraph,
+  nearestNode,
+  regionOf,
+  timesTo,
+  type Graph,
+  type RegionId,
+  type Route,
+} from '../routing'
 
 const TILES = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
 const ATTRIBUTION =
   '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, ' +
   '<a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)'
 
-// Trasy liczymy na razie tylko w Tatrach, bo tylko dla nich mamy sieć szlaków.
-const tatraPoints = points.filter((p) => groupOf(p.range) === 'Tatry').sort((a, b) => a.name.localeCompare(b.name, 'pl'))
+// Punkty, na które da się wyznaczyć trasę, pogrupowane regionami szlaków (Tatry, Sudety...).
+const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name, 'pl')
+const routable = (Object.keys(REGIONS) as RegionId[])
+  .map((r) => ({ region: r, list: points.filter((p) => regionOf(p) === r).sort(byName) }))
+  .filter((g) => g.list.length)
 const SNAP_MAX_M = 600 // dalej od szlaku niż tyle uznajemy, że punktu nie da się podpiąć
 
 /** Znak szlaku jak na drzewach: biały-kolor-biały. Dwa kolory = dwa szlaki razem. */
@@ -31,37 +46,49 @@ export function TrailMark({ colors }: { colors: string }) {
 export default function RoutePage() {
   const [params, setParams] = useSearchParams()
   const navigate = useNavigate()
-  const [graph, setGraph] = useState<Graph | null>(null)
-  const [gps, setGps] = useState<{ node: number } | null>(null)
+  const [loaded, setLoaded] = useState<{ region: RegionId; graph: Graph } | null>(null)
+  const [gps, setGps] = useState<{ region: RegionId; node: number } | null>(null)
   const [gpsMsg, setGpsMsg] = useState('')
 
-  useEffect(() => {
-    loadGraph().then(setGraph)
-  }, [])
-
   const target = getPoint(params.get('do') ?? '') ?? getPoint('rysy')!
+  const region = regionOf(target)
   const startCode = params.get('z') ?? ''
+
+  // Każdy region ma swój plik ze szlakami; dociągamy go, gdy zmieni się cel.
+  useEffect(() => {
+    if (region) loadGraph(region).then((graph) => setLoaded({ region, graph }))
+  }, [region])
+  const graph = loaded?.region === region ? loaded.graph : null
+  const regionPoints = useMemo(() => routable.find((g) => g.region === region)?.list ?? [], [region])
 
   // Punkt docelowy podpinamy do najbliższego miejsca na szlaku.
   const targetSnap = useMemo(() => (graph ? nearestNode(graph, target.lat, target.lon) : null), [graph, target])
 
-  // Gdy nie wybrano startu, szukamy najszybszego z popularnych wejść na szlaki.
-  const autoStart = useMemo(() => {
-    if (!graph || !targetSnap) return null
-    let best: { id: string; time: number } | null = null
-    for (const s of graph.data.starts.filter((s) => s.kind === 'start')) {
-      const r = findRoute(graph, s.node, targetSnap.node)
-      if (r && (!best || r.time < best.time)) best = { id: s.id, time: r.time }
-    }
-    return best?.id ?? null
-  }, [graph, targetSnap])
+  // Czas dojścia do celu z każdego miejsca na szlaku: z tego układamy listę startów
+  // od najszybszego i wybieramy start, gdy nikt go nie wskazał.
+  const times = useMemo(() => (graph && targetSnap ? timesTo(graph, targetSnap.node) : null), [graph, targetSnap])
+  const startsBy = (kind: 'start' | 'hut', limit: number) =>
+    !graph || !times
+      ? []
+      : graph.data.starts
+          .filter((s) => s.kind === kind && Number.isFinite(times[s.node]) && s.node !== targetSnap?.node)
+          .sort((a, b) => times[a.node] - times[b.node])
+          .slice(0, limit)
+  const heads = startsBy('start', 12)
+  const huts = startsBy('hut', 10)
+  const autoStart = heads[0]?.id ?? null
 
-  const code = startCode || (autoStart ? `s:${autoStart}` : '')
+  // Start z adresu, o ile pasuje do regionu celu (np. po zmianie celu z Rysów na Babią Górę już nie).
+  const fits = (c: string) =>
+    c === 'gps' ||
+    (c.startsWith('s:') && !!graph?.data.starts.some((s) => s.id === c.slice(2))) ||
+    (c.startsWith('p:') && !!getPoint(c.slice(2)) && regionOf(getPoint(c.slice(2))!) === region)
+  const code = startCode && fits(startCode) ? startCode : autoStart ? `s:${autoStart}` : ''
 
   // Zamiana wybranego startu na punkt sieci szlaków.
   const startNode = useMemo(() => {
     if (!graph) return null
-    if (code === 'gps') return gps?.node ?? null
+    if (code === 'gps') return gps?.region === region ? gps.node : null
     if (code.startsWith('s:')) return graph.data.starts.find((s) => s.id === code.slice(2))?.node ?? null
     if (code.startsWith('p:')) {
       const p = getPoint(code.slice(2))
@@ -70,7 +97,7 @@ export default function RoutePage() {
       return snap.dist <= SNAP_MAX_M ? snap.node : null
     }
     return null
-  }, [graph, code, gps])
+  }, [graph, code, gps, region])
 
   const route: Route | null = useMemo(() => {
     if (!graph || !targetSnap || startNode === null || targetSnap.dist > SNAP_MAX_M) return null
@@ -84,16 +111,16 @@ export default function RoutePage() {
   }
 
   async function locate() {
-    if (!graph) return
+    if (!graph || !region) return
     setGpsMsg('Szukam Cię…')
     try {
       const { coords } = await getPosition()
       const snap = nearestNode(graph, coords.latitude, coords.longitude)
       if (snap.dist > 2000) {
-        setGpsMsg(`Jesteś ${formatDistance(snap.dist)} od najbliższego szlaku w Tatrach.`)
+        setGpsMsg(`Jesteś ${formatDistance(snap.dist)} od najbliższego szlaku w regionie: ${REGIONS[region].name}.`)
         return
       }
-      setGps({ node: snap.node })
+      setGps({ region, node: snap.node })
       setGpsMsg('')
       setParam('z', 'gps')
     } catch {
@@ -107,7 +134,7 @@ export default function RoutePage() {
     const [lat, lon] = graph.data.nodes[node]
     const hut = graph.data.starts.find((s) => s.node === node)
     if (hut) return hut.name
-    const p = tatraPoints.find((p) => distanceM(lat, lon, p.lat, p.lon) < 150)
+    const p = regionPoints.find((p) => distanceM(lat, lon, p.lat, p.lon) < 150)
     return p?.name
   }
 
@@ -122,16 +149,18 @@ export default function RoutePage() {
     return (
       <section>
         <Link to="/" className="back" onClick={back}>← Wróć</Link>
-        <h1>Trasa</h1>
-        <p className="muted">Ładuję szlaki…</p>
+        <h1>Trasa: {target.name}</h1>
+        <p className="muted">{region ? 'Ładuję szlaki…' : 'Dla tych gór nie mam jeszcze mapy szlaków.'}</p>
       </section>
     )
   }
 
   const nodes = graph.data.nodes
   const line = (ids: number[]) => ids.map((k) => [nodes[k][0], nodes[k][1]] as [number, number])
-  const huts = graph.data.starts.filter((s) => s.kind === 'hut').sort((a, b) => a.name.localeCompare(b.name, 'pl'))
-  const heads = graph.data.starts.filter((s) => s.kind === 'start')
+  const eta = (node: number) => (times && Number.isFinite(times[node]) ? ` · ${formatHours(times[node])}` : '')
+  // Wybrany start zostaje na liście, nawet jeśli nie jest wśród najszybszych.
+  const chosen = graph.data.starts.find((s) => `s:${s.id}` === code)
+  if (chosen && !heads.includes(chosen) && !huts.includes(chosen)) (chosen.kind === 'hut' ? huts : heads).push(chosen)
 
   return (
     <section>
@@ -141,8 +170,12 @@ export default function RoutePage() {
       <label className="field">
         <span>Dokąd</span>
         <select value={target.id} onChange={(e) => setParam('do', e.target.value)}>
-          {tatraPoints.map((p) => (
-            <option key={p.id} value={p.id}>{p.name} ({p.elevation} m)</option>
+          {routable.map((g) => (
+            <optgroup key={g.region} label={REGIONS[g.region].name}>
+              {g.list.map((p) => (
+                <option key={p.id} value={p.id}>{p.name} ({p.elevation} m)</option>
+              ))}
+            </optgroup>
           ))}
         </select>
       </label>
@@ -151,16 +184,18 @@ export default function RoutePage() {
         <span>Skąd</span>
         <select value={code} onChange={(e) => (e.target.value === 'gps' ? locate() : setParam('z', e.target.value))}>
           <option value="gps">📍 Moja lokalizacja</option>
-          <optgroup label="Wejścia na szlaki">
+          <optgroup label="Wejścia na szlaki (od najszybszego)">
             {heads.map((s) => (
-              <option key={s.id} value={`s:${s.id}`}>{s.name}{s.id === autoStart ? ' (najszybciej)' : ''}</option>
+              <option key={s.id} value={`s:${s.id}`}>{s.name}{eta(s.node)}</option>
             ))}
           </optgroup>
-          <optgroup label="Schroniska">
-            {huts.map((s) => <option key={s.id} value={`s:${s.id}`}>{s.name}</option>)}
-          </optgroup>
+          {huts.length > 0 && (
+            <optgroup label="Schroniska">
+              {huts.map((s) => <option key={s.id} value={`s:${s.id}`}>{s.name}{eta(s.node)}</option>)}
+            </optgroup>
+          )}
           <optgroup label="Szczyty i przełęcze">
-            {tatraPoints.filter((p) => p.id !== target.id).map((p) => (
+            {regionPoints.filter((p) => p.id !== target.id).map((p) => (
               <option key={p.id} value={`p:${p.id}`}>{p.name}</option>
             ))}
           </optgroup>
@@ -238,8 +273,9 @@ export default function RoutePage() {
             })}
           </ol>
           <p className="muted small">
-            Czas liczony orientacyjnie (norma DIN: 4 km/h, 300 m/h w górę, 500 m/h w dół), bez przerw.
-            Zawsze sprawdź warunki i komunikaty TPN. Dane: {graph.data.source}, stan na {graph.data.fetched}.
+            Czas bez przerw, liczony jak na drogowskazach: wzór DIN dopasowany do czasów z tatrzańskich
+            szlakowskazów ({SPEED.flat / 1000} km/h, {SPEED.up} m/h w górę, {SPEED.down} m/h w dół). Zawsze sprawdź
+            warunki i komunikaty parku narodowego. Dane: {graph.data.source}, stan na {graph.data.fetched}.
           </p>
         </>
       )}
