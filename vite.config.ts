@@ -35,6 +35,8 @@ export default defineConfig({
       workbox: {
         // Pliki apki zapisujemy w pamięci przy pierwszym otwarciu (precache).
         globPatterns: ['**/*.{js,css,html,svg,png}'],
+        // Pliki ze szlakami regionów są duże (Beskidy to kilka MB), a mają działać bez internetu.
+        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
         runtimeCaching: [
           {
             // Kafelki mapy zapisujemy dopiero, gdy je obejrzysz (regulamin OpenTopoMap
