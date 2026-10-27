@@ -9,10 +9,11 @@
 //    i drogi (ways), z których się składają. Kolor szlaku jest w tagu osmc:symbol.
 // 2. Drogi tniemy na odcinki między skrzyżowaniami. Skrzyżowanie to punkt wspólny dla kilku dróg.
 // 3. Upraszczamy kształt odcinków (zostawiamy co kilka metrów punkt), żeby plik był mały.
-// 4. Dla każdego punktu pobieramy wysokość z Open-Meteo (model terenu Copernicus 90 m),
+// 4. Dla każdego punktu odczytujemy wysokość z modelu terenu Copernicus (siatka 30 m, scripts/dem.mjs),
 //    żeby apka mogła liczyć podejścia, zejścia i czas przejścia.
 
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { demElevations } from './dem.mjs'
 import { distanceM, runQuery } from './overpass.mjs'
 
 const REGION = process.argv[2] ?? 'tatry'
@@ -206,7 +207,15 @@ async function elevations(list) {
   }
   return out.map((e) => Math.round(e))
 }
-const eles = await elevations(nodes)
+// Najpierw model terenu Copernicus prosto z plików (szybko, bez limitów), a gdyby się nie udało,
+// zapasowo serwisy internetowe (wolne: przy dużych regionach potrafią limitować zapytania).
+let eles
+try {
+  eles = await demElevations(nodes)
+} catch (err) {
+  console.log(`Model terenu niedostępny (${err.message}), pytam serwisy`)
+  eles = await elevations(nodes)
+}
 nodes.forEach((p, i) => p.push(eles[i]))
 
 // --- Punkty startowe ---
@@ -304,7 +313,7 @@ const data = {
   // n: kolejne numery punktów, c: kolory (r czerwony, b niebieski, g zielony, y żółty, k czarny)
   edges: edges.map((e) => ({ n: e.n, c: e.colors })),
   starts,
-  source: 'OpenStreetMap (ODbL), wysokości: Open-Meteo / Copernicus DEM',
+  source: 'OpenStreetMap (ODbL), wysokości: Copernicus DEM GLO-30',
   fetched: new Date().toISOString().slice(0, 10),
 }
 mkdirSync('src/data/trails', { recursive: true })
